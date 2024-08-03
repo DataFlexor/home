@@ -162,8 +162,14 @@ function displayTable(tableData) {
   let maxCol = 0;
 
   tableData.cells.forEach(cellData => {
-    if (cellData.row > maxRow) maxRow = cellData.row;
-    if (cellData.column > maxCol) maxCol = cellData.column;
+    if (cellData.row > maxRow){
+      maxRow = cellData.row;
+      numRows = maxRow;
+    } 
+    if (cellData.column > maxCol) {
+      maxCol = cellData.column;
+      numCols = maxCol;
+    } 
   });
 
   for (let i = 1; i <= maxRow; i++) {

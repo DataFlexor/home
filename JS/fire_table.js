@@ -10,7 +10,8 @@ const chooseRowCol = document.getElementById('choose-row-col');
 const sendLayoutBtn = document.getElementById('send-layout');
 const newTableDiv = document.getElementById('new-table');
 const titleInput = document.getElementById('main-title');
-const saveBtn = document.getElementById('saveBtn'); 
+const saveBtn = document.getElementById('saveBtn');
+const individualTableName = document.getElementById('individualTableName');
 
 let numRows = 1;
 let numCols = 1;
@@ -72,13 +73,17 @@ document.addEventListener('DOMContentLoaded', () => {
       for (let j = 0; j < numCols; j++) {
         const cell = document.createElement('td');
         const input = document.createElement('input');
-        input.setAttribute('type', 'text');
+        input.setAttribute('type', (i === 0 || j === 0) ? 'text' : 'number');
         cell.appendChild(input);
         row.appendChild(cell);
       }
 
       table.appendChild(row);
     }
+
+    const firstCellInput = table.querySelector('tr:first-child td:first-child input');
+    console.log(individualTableName.value)
+    firstCellInput.value = individualTableName.value;
 
     newTableDiv.innerHTML = '';
     newTableDiv.appendChild(table);

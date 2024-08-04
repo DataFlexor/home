@@ -82,7 +82,6 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     const firstCellInput = table.querySelector('tr:first-child td:first-child input');
-    console.log(individualTableName.value)
     firstCellInput.value = individualTableName.value;
 
     newTableDiv.innerHTML = '';

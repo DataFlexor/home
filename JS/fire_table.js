@@ -12,7 +12,6 @@ const newTableDiv = document.getElementById('new-table');
 const titleInput = document.getElementById('main-title');
 const saveBtn = document.getElementById('saveBtn');
 const individualTableName = document.getElementById('individualTableName');
-console.log(individualTableName);
 
 let numRows = 1;
 let numCols = 1;
@@ -77,7 +76,6 @@ document.addEventListener('DOMContentLoaded', () => {
     // Add event listeners to each input for auto-save
     addAutoSaveListeners();
   });
-  
 
   saveBtn.addEventListener('click', async () => {
     await saveTableData();

@@ -41,12 +41,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
       if (docSnapshot.exists()) {
         const tableData = docSnapshot.data();
-        if (!tableData.cells || !Array.isArray(tableData.cells) || tableData.cells.length === 0) {
+        if (!tableData.tables || !tableData.tables[individualTableName.value] || !Array.isArray(tableData.tables[individualTableName.value].data) || tableData.tables[individualTableName.value].data.length === 0) {
           console.log('No data in cells field or cells field is not an array.');
           return;
         }
 
-        displayTable(tableData);
+        displayTable(tableData.tables[individualTableName.value]);
       } else {
         console.error('Document does not exist');
       }
@@ -122,6 +122,7 @@ async function saveTableData() {
     }
 
     const urlParams = new URLSearchParams(window.location.search);
+    const userId = urlParams.get('userId');
     const docId = urlParams.get('docId');
 
     if (!docId) {
@@ -133,8 +134,16 @@ async function saveTableData() {
 
     const tableDataObject = {
       name: titleInput.value || "Untitled Table",
-      date: Timestamp.now(),
-      cells: []
+      owner: userId,
+      collaborators: [],  // Add logic to fetch collaborators if needed
+      tables: {}
+    };
+
+    const individualTableData = {
+      individualTableName: individualTableName.value || "Unnamed Table",
+      id: docId,
+      data: [],
+      headers: []
     };
 
     const table = newTableDiv.querySelector('table');
@@ -144,8 +153,14 @@ async function saveTableData() {
         row: Math.floor(index / numCols) + 1,
         column: (index % numCols) + 1
       };
-      tableDataObject.cells.push(cellData);
+      individualTableData.data.push(cellData);
+
+      if (cellData.row === 1) {
+        individualTableData.headers.push(cellData.text);
+      }
     });
+
+    tableDataObject.tables[individualTableName.value] = individualTableData;
 
     await setDoc(tableRef, tableDataObject, { merge: true });
 
@@ -165,7 +180,7 @@ function displayTable(tableData) {
   let maxRow = 0;
   let maxCol = 0;
 
-  tableData.cells.forEach(cellData => {
+  tableData.data.forEach(cellData => {
     if (cellData.row > maxRow){
       maxRow = cellData.row;
       numRows = maxRow;
@@ -184,7 +199,7 @@ function displayTable(tableData) {
       const input = document.createElement('input');
       input.setAttribute('type', 'text');
 
-      const cellData = tableData.cells.find(cell => cell.row === i && cell.column === j);
+      const cellData = tableData.data.find(cell => cell.row === i && cell.column === j);
       if (cellData) {
         input.value = cellData.text;
       } else {

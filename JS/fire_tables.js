@@ -28,7 +28,6 @@ auth.onAuthStateChanged(user => {
                   owner: user.uid,
                   collaborators: [],
                   date: Timestamp.now(),
-                  cells: []
                 });
           
                 console.log("Table created successfully!");

@@ -12,6 +12,7 @@ const newTableDiv = document.getElementById('new-table');
 const titleInput = document.getElementById('main-title');
 const saveBtn = document.getElementById('saveBtn');
 const individualTableName = document.getElementById('individualTableName');
+console.log(individualTableName);
 
 let numRows = 1;
 let numCols = 1;
@@ -200,9 +201,6 @@ async function saveTableData() {
   }
 }
 
-
-
-
 titleInput.addEventListener('input', handleInputChange);
 
 function displayTable(tableData, tableName) {
@@ -258,7 +256,6 @@ function displayTable(tableData, tableName) {
   newTableDiv.appendChild(tableElement);
   addAutoSaveListeners();
 }
-
 
 async function updateTableName(tableElement, newTableName) {
   // Check if the new table name is different from the current ID

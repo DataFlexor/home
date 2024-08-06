@@ -121,6 +121,23 @@
     align-items: center;
 }
 
+.menu-button {
+    border-radius: 6px;
+    border: 1.5px solid var(--custom-cyan);
+    height: 32px;
+}
+
+.fixed-sidebar {
+    position: fixed;
+    /* top: 0;
+    left: 0;
+    width: 200px;
+    height: 100%; */
+    /* background-color: var(--custom-grey); */
+    /* padding: 20px;  */
+    overflow-y: auto;
+}
+
 .table_rw_popup {
     position: absolute;
     top: 50vh;

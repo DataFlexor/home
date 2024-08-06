@@ -1,5 +1,5 @@
 import { app } from './fire_initialize.js';
-import { getFirestore, doc, setDoc, Timestamp, getDoc } from 'https://www.gstatic.com/firebasejs/10.12.3/firebase-firestore.js';
+import { getFirestore, doc, setDoc, getDoc } from 'https://www.gstatic.com/firebasejs/10.12.3/firebase-firestore.js';
 import { getAuth } from "https://www.gstatic.com/firebasejs/10.12.3/firebase-auth.js";
 
 const db = getFirestore(app);
@@ -37,23 +37,29 @@ document.addEventListener('DOMContentLoaded', () => {
 
     try {
       const docSnapshot = await getDoc(tableRef);
-      titleInput.value = docSnapshot.exists() ? docSnapshot.data().name : '';
-
       if (docSnapshot.exists()) {
         const tableData = docSnapshot.data();
-        if (!tableData.tables || !tableData.tables[individualTableName.value] || !Array.isArray(tableData.tables[individualTableName.value].data) || tableData.tables[individualTableName.value].data.length === 0) {
-          console.log('No data in cells field or cells field is not an array.');
-          return;
+        if (tableData && tableData.tables && Object.keys(tableData.tables).length > 0) {
+          const tableNames = Object.keys(tableData.tables);
+          tableNames.forEach(tableName => {
+            displayTable(tableData.tables[tableName].data, tableName);
+          });
+        } else {
+          displayNoTablesMessage();
         }
-
-        displayTable(tableData.tables[individualTableName.value]);
       } else {
         console.error('Document does not exist');
+        displayNoTablesMessage(); // Show a message if the document itself doesn't exist
       }
     } catch (error) {
       console.error('Error fetching table document: ', error);
+      displayNoTablesMessage();
     }
   });
+
+  function displayNoTablesMessage() {
+    newTableDiv.innerHTML = '<p>No tables available. Please create a new table.</p>';
+  }
 
   newTableBtn.addEventListener('click', () => {
     chooseRowCol.style.display = 'inline-block';
@@ -61,42 +67,57 @@ document.addEventListener('DOMContentLoaded', () => {
 
   sendLayoutBtn.addEventListener('click', () => {
     chooseRowCol.style.display = 'none';
-    numRows = parseInt(document.getElementById('rows').value);
-    numCols = parseInt(document.getElementById('columns').value);
-
-    const table = document.createElement('table');
-    table.classList.add('table-container');
-
-    for (let i = 0; i < numRows; i++) {
-      const row = document.createElement('tr');
-
-      for (let j = 0; j < numCols; j++) {
-        const cell = document.createElement('td');
-        const input = document.createElement('input');
-        input.setAttribute('type', (i === 0 || j === 0) ? 'text' : 'number');
-        cell.appendChild(input);
-        row.appendChild(cell);
-      }
-
-      table.appendChild(row);
-    }
-
-    const firstCellInput = table.querySelector('tr:first-child td:first-child input');
-    firstCellInput.value = individualTableName.value;
-
-    newTableDiv.innerHTML = '';
-    newTableDiv.appendChild(table);
-
-    newTableDiv.style.display = 'block';
-
+    numRows = parseInt(document.getElementById('rows').value) || 1;
+    numCols = parseInt(document.getElementById('columns').value) || 1;
+    const tableName = individualTableName.value || `table-${Date.now()}`; // Use provided name or a default
+  
+    createTable(numRows, numCols, tableName);
+  
     // Add event listeners to each input for auto-save
     addAutoSaveListeners();
   });
+  
 
   saveBtn.addEventListener('click', async () => {
     await saveTableData();
   });
 });
+
+function createTable(rows, cols, tableName) {
+  const table = document.createElement('table');
+  table.classList.add('table-container');
+  table.id = tableName; // Use the provided table name
+
+  for (let i = 0; i < rows; i++) {
+    const row = document.createElement('tr');
+
+    for (let j = 0; j < cols; j++) {
+      const cell = document.createElement('td');
+      const input = document.createElement('input');
+
+      // Set the first cell to an editable table name
+      if (i === 0 && j === 0) {
+        input.setAttribute('type', 'text');
+        input.value = tableName;
+        input.classList.add('table-name-input');
+        input.addEventListener('blur', () => {
+          updateTableName(table, input.value);
+        });
+      } else {
+        input.setAttribute('type', (i === 0 || j === 0) ? 'text' : 'number');
+      }
+
+      cell.appendChild(input);
+      row.appendChild(cell);
+    }
+
+    table.appendChild(row);
+  }
+
+  newTableDiv.appendChild(table);
+  newTableDiv.style.display = 'block';
+  addAutoSaveListeners();
+}
 
 function addAutoSaveListeners() {
   const inputs = newTableDiv.querySelectorAll('input');
@@ -106,7 +127,6 @@ function addAutoSaveListeners() {
 }
 
 function handleInputChange() {
-  // give the saveTableData some time to save the data before it triggers again
   if (autoSaveTimeout) clearTimeout(autoSaveTimeout);
   autoSaveTimeout = setTimeout(async () => {
     await saveTableData();
@@ -130,37 +150,47 @@ async function saveTableData() {
       return;
     }
 
-    const tableRef = doc(db, `tables/${user.uid}/tables`, docId);
+    const tableRef = doc(db, `tables/${userId}/tables`, docId);
 
     const tableDataObject = {
       name: titleInput.value || "Untitled Table",
       owner: userId,
-      collaborators: [],  // Add logic to fetch collaborators if needed
+      collaborators: [],
       tables: {}
     };
 
-    const individualTableData = {
-      individualTableName: individualTableName.value || "Unnamed Table",
-      id: docId,
-      data: [],
-      headers: []
-    };
-
-    const table = newTableDiv.querySelector('table');
-    table.querySelectorAll('input').forEach((input, index) => {
-      const cellData = {
-        text: input.value,
-        row: Math.floor(index / numCols) + 1,
-        column: (index % numCols) + 1
+    const tableElements = newTableDiv.querySelectorAll('table');
+    tableElements.forEach(tableElement => {
+      const tableName = tableElement.id;
+      const individualTableData = {
+        individualTableName: tableName,
+        id: docId,
+        data: [],
+        headers: []
       };
-      individualTableData.data.push(cellData);
 
-      if (cellData.row === 1) {
-        individualTableData.headers.push(cellData.text);
-      }
+      const rows = tableElement.querySelectorAll('tr');
+      rows.forEach((row, rowIndex) => {
+        const cells = row.querySelectorAll('td');
+        cells.forEach((cell, colIndex) => {
+          const input = cell.querySelector('input');
+          if (input) {
+            const cellData = {
+              text: input.value,
+              row: rowIndex + 1, // Adjust for 1-based indexing
+              column: colIndex + 1 // Adjust for 1-based indexing
+            };
+            individualTableData.data.push(cellData);
+
+            if (rowIndex === 0) { // If it's the first row
+              individualTableData.headers[colIndex] = input.value;
+            }
+          }
+        });
+      });
+
+      tableDataObject.tables[tableName] = individualTableData;
     });
-
-    tableDataObject.tables[individualTableName.value] = individualTableData;
 
     await setDoc(tableRef, tableDataObject, { merge: true });
 
@@ -170,25 +200,22 @@ async function saveTableData() {
   }
 }
 
+
+
+
 titleInput.addEventListener('input', handleInputChange);
 
-function displayTable(tableData) {
-  newTableDiv.innerHTML = '';
+function displayTable(tableData, tableName) {
   const tableElement = document.createElement('table');
   tableElement.classList.add('table-container');
+  tableElement.id = tableName; // Set the ID to the table name
 
   let maxRow = 0;
   let maxCol = 0;
 
-  tableData.data.forEach(cellData => {
-    if (cellData.row > maxRow){
-      maxRow = cellData.row;
-      numRows = maxRow;
-    } 
-    if (cellData.column > maxCol) {
-      maxCol = cellData.column;
-      numCols = maxCol;
-    } 
+  tableData.forEach(cellData => {
+    if (cellData.row > maxRow) maxRow = cellData.row;
+    if (cellData.column > maxCol) maxCol = cellData.column;
   });
 
   for (let i = 1; i <= maxRow; i++) {
@@ -199,7 +226,7 @@ function displayTable(tableData) {
       const input = document.createElement('input');
       input.setAttribute('type', 'text');
 
-      const cellData = tableData.data.find(cell => cell.row === i && cell.column === j);
+      const cellData = tableData.find(cell => cell.row === i && cell.column === j);
       if (cellData) {
         input.value = cellData.text;
       } else {
@@ -213,8 +240,65 @@ function displayTable(tableData) {
     tableElement.appendChild(row);
   }
 
+  // Insert the table name in the first cell and make it editable
+  const firstRow = tableElement.querySelector('tr');
+  const firstCell = firstRow ? firstRow.querySelector('td') : null;
+  if (firstCell) {
+    firstCell.innerHTML = ''; // Clear any existing content
+    const input = document.createElement('input');
+    input.setAttribute('type', 'text');
+    input.value = tableName;
+    input.classList.add('table-name-input');
+    input.addEventListener('blur', () => {
+      updateTableName(tableElement, input.value);
+    });
+    firstCell.appendChild(input);
+  }
+
   newTableDiv.appendChild(tableElement);
-  newTableDiv.style.display = 'block';
-  // Add event listeners to each input for auto-save
   addAutoSaveListeners();
+}
+
+
+async function updateTableName(tableElement, newTableName) {
+  // Check if the new table name is different from the current ID
+  if (tableElement.id === newTableName) return;
+
+  try {
+    const user = auth.currentUser;
+    if (!user) {
+      console.error('User not authenticated');
+      return;
+    }
+
+    const urlParams = new URLSearchParams(window.location.search);
+    const userId = urlParams.get('userId');
+    const docId = urlParams.get('docId');
+
+    if (!docId) {
+      console.error('Document ID is missing');
+      return;
+    }
+
+    const tableRef = doc(db, `tables/${userId}/tables`, docId);
+
+    // Get the existing table data
+    const tableData = (await getDoc(tableRef)).data();
+
+    // Update the table name in the data object
+    const oldTableName = tableElement.id;
+    const updatedTableData = { ...tableData };
+    updatedTableData.tables[newTableName] = updatedTableData.tables[oldTableName];
+    delete updatedTableData.tables[oldTableName];
+
+    // Save the updated data to Firestore
+    await setDoc(tableRef, updatedTableData, { merge: true });
+
+    // Update the table element's ID and name
+    tableElement.id = newTableName;
+
+    console.log('Table name updated successfully');
+  } catch (e) {
+    console.error('Error updating table name: ', e);
+  }
 }

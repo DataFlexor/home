@@ -40,10 +40,7 @@ document.addEventListener('DOMContentLoaded', () => {
       if (docSnapshot.exists()) {
         const tableData = docSnapshot.data();
 
-        const isOwner = user.id === tableData.owner;
-        const isCollab = tableData.collaborators.includes(user.id);
-
-        if (!isOwner && !isCollab) {
+        if ((user.uid !== tableData.owner) && !(tableData.collaborators.includes(user.uid))) {
           window.location = 'restricted.html';
           return;
         }

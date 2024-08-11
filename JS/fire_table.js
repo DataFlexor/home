@@ -226,7 +226,7 @@ function displayTable(tableData, tableName) {
     for (let j = 1; j <= maxCol; j++) {
       const cell = document.createElement('td');
       const input = document.createElement('input');
-      input.setAttribute('type', 'number');
+      input.setAttribute('type', 'text');
 
       const cellData = tableData.find(cell => cell.row === i && cell.column === j);
       if (cellData) {

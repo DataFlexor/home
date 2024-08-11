@@ -39,6 +39,16 @@ document.addEventListener('DOMContentLoaded', () => {
       const docSnapshot = await getDoc(tableRef);
       if (docSnapshot.exists()) {
         const tableData = docSnapshot.data();
+
+        const isOwner = user.id === tableData.owner;
+        const isCollab = tableData.collaborators.includes(user.id);
+
+        if (!isOwner && !isCollab) {
+          window.location = 'restricted.html';
+          return;
+        }
+
+        titleInput.value = tableData.name;
         if (tableData && tableData.tables && Object.keys(tableData.tables).length > 0) {
           const tableNames = Object.keys(tableData.tables);
           tableNames.forEach(tableName => {
@@ -243,6 +253,7 @@ function displayTable(tableData, tableName) {
     firstCell.innerHTML = ''; // Clear any existing content
     const input = document.createElement('input');
     input.setAttribute('type', 'text');
+    input.disabled = true;
     input.value = tableName;
     input.classList.add('table-name-input');
     input.addEventListener('blur', () => {

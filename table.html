@@ -52,7 +52,7 @@
   <!-- where the tables appear -->
   <div style="display: flex;">
     <nav class="fixed-sidebar nav beige-box flex-colum" style="height: 1000px; margin: 130px 20px 10px; border-radius: 30px;">
-      <div class="modal modal-sheet position-static d-block py-4 px-4 py-md-2" tabindex="-1" role="dialog" id="modalSheet" style="width: 300px;">
+      <div class="modal modal-sheet position-static d-block py-4 px-4 py-md-2" tabindex="-1" role="dialog" id="modalSheet" style="width: 170px;">
         <div class="modal-dialog" role="document">
           <div class="modal-content rounded-4">
             <div class="modal-header border-bottom-0 purple-background-color">
@@ -60,21 +60,23 @@
             </div>
             <div class="modal-body py-3 custom-background-color" style="height: 100px;">
               <ul class="nav">
-                <div style="text-align: center;">
-                  <input id="fontSize" class="button-grey no-spinners" type="number"></input>
+                <div style="text-align: center; margin-right: 5px;">
+                  <input id="fontSize" class="button-grey no-spinners" type="number" style="width: 70px;"></input>
                 </div>
 
-                <button id="downFont" type="button" class="button-invis">
-                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-caret-down-fill" viewBox="0 0 16 16">
-                    <path d="M7.247 11.14 2.451 5.658C1.885 5.013 2.345 4 3.204 4h9.592a1 1 0 0 1 .753 1.659l-4.796 5.48a1 1 0 0 1-1.506 0z"/>
-                  </svg>
-                </button>
+                <div style="margin-bottom: 2px;">
+                  <button type="button" id="upFont" class="noto-serif-ethiopic fw-bold button-invis" style="display: block; padding: 0px; height: 13px;">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" fill="currentColor" class="bi bi-caret-up-fill" viewBox="0 0 16 16" style="padding: 0px;">
+                      <path d="m7.247 4.86-4.796 5.481c-.566.647-.106 1.659.753 1.659h9.592a1 1 0 0 0 .753-1.659l-4.796-5.48a1 1 0 0 0-1.506 0z"/>
+                    </svg>
+                  </button>
 
-                <button id="upFont" type="button" class="button-invis">
-                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-caret-up-fill" viewBox="0 0 16 16">
-                    <path d="m7.247 4.86-4.796 5.481c-.566.647-.106 1.659.753 1.659h9.592a1 1 0 0 0 .753-1.659l-4.796-5.48a1 1 0 0 0-1.506 0z"/>
-                  </svg>
-                </button>
+                  <button type="button" id="downFont" class="noto-serif-ethiopic fw-bold button-invis justify-content-center align-items-center" style="display: block; padding: 0px; height: 13px;">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" fill="currentColor" class="bi bi-caret-down-fill" viewBox="0 0 16 16" style="padding: 0px;">
+                      <path d="M7.247 11.14 2.451 5.658C1.885 5.013 2.345 4 3.204 4h9.592a1 1 0 0 1 .753 1.659l-4.796 5.48a1 1 0 0 1-1.506 0z"/>
+                    </svg>
+                  </button> 
+                </div>
 
                 <button type="button" class="noto-serif-ethiopic fw-bold button-invis">B</button>
                 <button type="button" class="noto-serif-ethiopic fw-bold fst-italic button-invis">I</button>
@@ -130,27 +132,24 @@
               <ul class="nav">
                 <div>
                 <button type="button" class="noto-serif-ethiopic fw-bold button-invis">
-                  <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" fill="currentColor" class="bi bi-paint-bucket" viewBox="0 0 16 16">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-paint-bucket" viewBox="0 0 16 16">
                     <path d="M6.192 2.78c-.458-.677-.927-1.248-1.35-1.643a3 3 0 0 0-.71-.515c-.217-.104-.56-.205-.882-.02-.367.213-.427.63-.43.896-.003.304.064.664.173 1.044.196.687.556 1.528 1.035 2.402L.752 8.22c-.277.277-.269.656-.218.918.055.283.187.593.36.903.348.627.92 1.361 1.626 2.068.707.707 1.441 1.278 2.068 1.626.31.173.62.305.903.36.262.05.64.059.918-.218l5.615-5.615c.118.257.092.512.05.939-.03.292-.068.665-.073 1.176v.123h.003a1 1 0 0 0 1.993 0H14v-.057a1 1 0 0 0-.004-.117c-.055-1.25-.7-2.738-1.86-3.494a4 4 0 0 0-.211-.434c-.349-.626-.92-1.36-1.627-2.067S8.857 3.052 8.23 2.704c-.31-.172-.62-.304-.903-.36-.262-.05-.64-.058-.918.219zM4.16 1.867c.381.356.844.922 1.311 1.632l-.704.705c-.382-.727-.66-1.402-.813-1.938a3.3 3.3 0 0 1-.131-.673q.137.09.337.274m.394 3.965c.54.852 1.107 1.567 1.607 2.033a.5.5 0 1 0 .682-.732c-.453-.422-1.017-1.136-1.564-2.027l1.088-1.088q.081.181.183.365c.349.627.92 1.361 1.627 2.068.706.707 1.44 1.278 2.068 1.626q.183.103.365.183l-4.861 4.862-.068-.01c-.137-.027-.342-.104-.608-.252-.524-.292-1.186-.8-1.846-1.46s-1.168-1.32-1.46-1.846c-.147-.265-.225-.47-.251-.607l-.01-.068zm2.87-1.935a2.4 2.4 0 0 1-.241-.561c.135.033.324.11.562.241.524.292 1.186.8 1.846 1.46.45.45.83.901 1.118 1.31a3.5 3.5 0 0 0-1.066.091 11 11 0 0 1-.76-.694c-.66-.66-1.167-1.322-1.458-1.847z"/>
                   </svg>
                 </button>
                 </div>
 
-                <div>
-                <button type="button" class="noto-serif-ethiopic fw-bold button-invis justify-content-center align-items-center" style="display: block;">
-                  <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-plus" viewBox="0 0 16 16">
-                    <path d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4"/>
-                  </svg>
-                  Insert Column
-                </button>
-                <button type="button" class="noto-serif-ethiopic fw-bold button-invis" style="display: block;">
-                  <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-plus" viewBox="0 0 16 16">
-                    <path d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4"/>
-                  </svg>
-                  Insert Row
-                </button>
-                </div>
-              </ul>
+                
+                <li style="list-style-type: none;">
+                  <a class="nav-link" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false" style="color:black; padding: 1px 8px;">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-plus" viewBox="0 0 16 16">
+                      <path d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4"/>
+                    </svg>
+                  </a>
+                  <ul class= "dropdown-menu" style="background-color: #EDEDED;">
+                    <a id="addCol">Column</a>
+                    <a id="addRow">Row</a>
+                  </ul>
+                </li>
             </div>
           </div>
         </div>

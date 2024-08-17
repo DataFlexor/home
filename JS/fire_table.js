@@ -87,6 +87,10 @@ document.addEventListener('DOMContentLoaded', () => {
   saveBtn.addEventListener('click', async () => {
     await saveTableData();
   });
+
+  $('#shareBtn').click(function() {
+    shareTable();
+  });
 });
 
 function createTable(rows, cols, tableName) {
@@ -224,9 +228,14 @@ function displayTable(tableData, tableName) {
     const row = document.createElement('tr');
 
     for (let j = 1; j <= maxCol; j++) {
+
       const cell = document.createElement('td');
       const input = document.createElement('input');
-      input.setAttribute('type', 'text');
+      if (i === 1 || j === 1) {
+        input.setAttribute('type', 'text');
+      } else {
+        input.setAttribute('type', 'number');
+      }
 
       const cellData = tableData.find(cell => cell.row === i && cell.column === j);
       if (cellData) {
@@ -303,4 +312,8 @@ async function updateTableName(tableElement, newTableName) {
   } catch (e) {
     console.error('Error updating table name: ', e);
   }
+}
+
+function shareTable() {
+  alert('Share clicked')
 }

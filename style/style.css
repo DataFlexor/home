@@ -140,11 +140,12 @@
 
 .table_rw_popup {
     position: absolute;
+    padding: 0px 20px;
     top: 50vh;
     left: 50vw;
     transform: translate(-50%, -50%);
-    width: 190px;
-    height: 140px;
+    width: 250px;
+    height: 250px;
     display: flex; 
     flex-direction: column; 
     align-items: center; 

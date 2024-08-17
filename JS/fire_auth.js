@@ -23,18 +23,20 @@ if (signUp) {
 
       // Add user data to Firestore
       const db = getFirestore(app);
-      console.log(db);
-      const newUserDoc = await setDoc(doc(db, "tables", user.uid),{
-        tables: [],
-      });
-      console.log(newUserDoc);
+      
+      const userDoc = {
+        uid: user.uid
+      };
+
+      // Store user data in "users" collection
+      await setDoc(doc(db, "users", email), userDoc);
 
       window.location.href = "login.html";
     })
     .catch((error) => {
       const errorCode = error.code;
       const errorMessage = error.message;
-      console.log("User not created");
+      console.log("User not created", errorCode, errorMessage);
       // 
     });
     }

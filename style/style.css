@@ -211,6 +211,25 @@ background-color: #f2f2f2;
     margin: 0;
 }
 
+.share-popup {
+    background-color: var(--custom-grey);
+    padding: 12px; 
+    border-radius: 12px;
+}
+
+.share-popup > input {
+    outline: none;
+    border: 2px solid var(--custom-grey);;
+    border-radius: 10px;
+    padding: 6px;
+}
+
+.share-popup > input:focus {
+    border: 1px solid black;
+    outline: 2px solid var(--custom-cyan);
+
+}
+
 @media only screen and (max-width: 600px) {
     .home-padding {
         padding: 200px 0px;

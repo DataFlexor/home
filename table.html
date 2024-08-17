@@ -1,59 +1,76 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Table</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
-    <link rel="stylesheet" href="./style/style.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Table</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+  <link rel="stylesheet" href="./style/style.css">
 </head>
+
 <body>
   <nav class="fixed-top custom-background-color border-bottom">
-      <header class="d-flex flex-wrap align-items-center justify-content-center justify-content-md-between py-2 mb-1">
-          <div style="width: 100%; display: flex; align-items: center; justify-content: space-between;">
-              <a href="#" style="flex: 1; text-align: center; margin-left: 24px; text-decoration: none;">Logo</a>
-              <li style="list-style-type: none; margin-right: 24px;">
-                <a class="nav-link" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                  <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" fill="currentColor" class="bi bi-list" viewBox="0 0 16 16">
-                    <path fill-rule="evenodd" d="M2.5 12a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5m0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5m0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5"/>
-                  </svg>
-                </a>
-                <ul class= "dropdown-menu" style="background-color: #EDEDED;">
-                    <button type="button" id="signoutButton" class="py-2 text-properties noto-serif-ethiopic fw-bold button-cyan">Sign out
-                      <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-person-fill" viewBox="0 0 16 16">
-                        <path d="M3 14s-1 0-1-1 1-4 6-4 6 3 6 4-1 1-1 1zm5-6a3 3 0 1 0 0-6 3 3 0 0 0 0 6"/>
-                      </svg>
-                    </button>
-                </ul>
-              </li>
-            </div>
-      </header>
-  </nav>
-  
-  <div style="position: fixed;">
-    <button class="menu-button noto-serif-ethiopic fw-bold" id="new-table-btn" style="margin: 100px 10px 15px 25px; ">+Table</button>
-
-    <!-- small popup menu -->
-    <div id="choose-row-col" style="display: none;">
-      <div class="table_rw_popup">
-        <label for="individualTableName" class="form-label">Individual Table Name</label>
-        <input class="form-control" id="individualTableName" required>
-        <label for="columns">Columns</label>
-        <input class="form-control" type="number" id="columns" required>
-        <label for="rows">Rows</label>
-        <input class="form-control" type="number" id="rows" required>
-        <button id="send-layout" class="menu-button" style="margin-top: 10px">Create Table</button>
+    <header class="d-flex flex-wrap align-items-center justify-content-center justify-content-md-between py-2 mb-1">
+      <div style="width: 100%; display: flex; align-items: center; justify-content: space-between;">
+        <a href="#" style="flex: 1; text-align: center; margin-left: 24px; text-decoration: none;">Logo</a>
+        <li style="list-style-type: none; margin-right: 24px;">
+          <a class="nav-link" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+            <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" fill="currentColor" class="bi bi-list"
+              viewBox="0 0 16 16">
+              <path fill-rule="evenodd"
+                d="M2.5 12a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5m0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5m0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5" />
+            </svg>
+          </a>
+          <ul class="dropdown-menu" style="background-color: #EDEDED;">
+            <button type="button" id="signoutButton"
+              class="py-2 text-properties noto-serif-ethiopic fw-bold button-cyan">Sign out
+              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor"
+                class="bi bi-person-fill" viewBox="0 0 16 16">
+                <path d="M3 14s-1 0-1-1 1-4 6-4 6 3 6 4-1 1-1 1zm5-6a3 3 0 1 0 0-6 3 3 0 0 0 0 6" />
+              </svg>
+            </button>
+          </ul>
+        </li>
       </div>
-    </div>
-    <input type="text" id="main-title" >
+    </header>
+  </nav>
+
+  <div style="position: fixed;">
+    <button class="menu-button noto-serif-ethiopic fw-bold" id="new-table-btn"
+      style="margin: 100px 10px 15px 25px;">+Table</button>
+    <input type="text" id="main-title">
     <button class="menu-button noto-serif-ethiopic fw-bold" id="saveBtn" class="noto-serif-ethiopic">Save</button>
     <button class="menu-button noto-serif-ethiopic fw-bold" id="shareBtn" class="noto-serif-ethiopic">Share</button>
   </div>
 
-  <nav class="fixed-sidebar nav gray-box flex-colum" style="height: 1000px; margin: 150px 20px 10px 25px; border-radius: 30px;">
+  <div style="position: fixed; margin: 135px 0px 0px 420px; display: none;" id="share-menu">
+    <div class="share-popup">
+      <input id="single-collab" placeholder="Collaborator email" required>
+      <button class="menu-button noto-serif-ethiopic fw-bold" id="sendCollab" class="noto-serif-ethiopic">Send</button>
+    </div>
+  </div>
+
+  <!-- small popup menu -->
+  <div id="choose-row-col" style="display: none;">
+    <div class="table_rw_popup">
+      <label for="individualTableName" class="form-label">Individual Table Name</label>
+      <input class="form-control" id="individualTableName" required>
+      <label for="columns">Columns</label>
+      <input class="form-control" type="number" id="columns" required>
+      <label for="rows">Rows</label>
+      <input class="form-control" type="number" id="rows" required>
+      <button id="send-layout" class="menu-button" style="margin-top: 10px">Create Table</button>
+    </div>
+  </div>
+
+  <nav class="fixed-sidebar nav gray-box flex-colum"
+    style="height: 1000px; margin: 150px 20px 10px 25px; border-radius: 30px;">
 
     <div class="dark-gray-background-color" style="width: 170px;">
-      <div class="modal modal-sheet position-static d-block py-4 px-4 py-md-2" tabindex="-1" role="dialog" id="modalSheet" style="width: 170px;">
+      <div class="modal modal-sheet position-static d-block py-4 px-4 py-md-2" tabindex="-1" role="dialog"
+        id="modalSheet" style="width: 170px;">
         <div class="modal-dialog" role="document">
           <div class="modal-content rounded-4">
             <div class="modal-header border-bottom-0 purple-background-color">
@@ -66,44 +83,59 @@
                 </div>
 
                 <div style="margin-bottom: 2px;">
-                  <button type="button" id="upFont" class="noto-serif-ethiopic fw-bold button-invis" style="display: block; padding: 0px; height: 13px;">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" fill="currentColor" class="bi bi-caret-up-fill" viewBox="0 0 16 16" style="padding: 0px;">
-                      <path d="m7.247 4.86-4.796 5.481c-.566.647-.106 1.659.753 1.659h9.592a1 1 0 0 0 .753-1.659l-4.796-5.48a1 1 0 0 0-1.506 0z"></path>
+                  <button type="button" id="upFont" class="noto-serif-ethiopic fw-bold button-invis"
+                    style="display: block; padding: 0px; height: 13px;">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" fill="currentColor"
+                      class="bi bi-caret-up-fill" viewBox="0 0 16 16" style="padding: 0px;">
+                      <path
+                        d="m7.247 4.86-4.796 5.481c-.566.647-.106 1.659.753 1.659h9.592a1 1 0 0 0 .753-1.659l-4.796-5.48a1 1 0 0 0-1.506 0z">
+                      </path>
                     </svg>
                   </button>
 
-                  <button type="button" id="downFont" class="noto-serif-ethiopic fw-bold button-invis justify-content-center align-items-center" style="display: block; padding: 0px; height: 13px;">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" fill="currentColor" class="bi bi-caret-down-fill" viewBox="0 0 16 16" style="padding: 0px;">
-                      <path d="M7.247 11.14 2.451 5.658C1.885 5.013 2.345 4 3.204 4h9.592a1 1 0 0 1 .753 1.659l-4.796 5.48a1 1 0 0 1-1.506 0z"></path>
+                  <button type="button" id="downFont"
+                    class="noto-serif-ethiopic fw-bold button-invis justify-content-center align-items-center"
+                    style="display: block; padding: 0px; height: 13px;">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" fill="currentColor"
+                      class="bi bi-caret-down-fill" viewBox="0 0 16 16" style="padding: 0px;">
+                      <path
+                        d="M7.247 11.14 2.451 5.658C1.885 5.013 2.345 4 3.204 4h9.592a1 1 0 0 1 .753 1.659l-4.796 5.48a1 1 0 0 1-1.506 0z">
+                      </path>
                     </svg>
-                  </button> 
+                  </button>
                 </div>
 
                 <button type="button" class="noto-serif-ethiopic fw-bold button-invis">B</button>
                 <button type="button" class="noto-serif-ethiopic fw-bold fst-italic button-invis">I</button>
-                
+
                 <li style="list-style-type: none;">
-                  <a class="nav-link" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false" style="color:black; padding: 1px 8px;">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-palette" viewBox="0 0 16 16">
-                      <path d="M8 5a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3m4 3a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3M5.5 7a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0m.5 6a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3"></path>
-                      <path d="M16 8c0 3.15-1.866 2.585-3.567 2.07C11.42 9.763 10.465 9.473 10 10c-.603.683-.475 1.819-.351 2.92C9.826 14.495 9.996 16 8 16a8 8 0 1 1 8-8m-8 7c.611 0 .654-.171.655-.176.078-.146.124-.464.07-1.119-.014-.168-.037-.37-.061-.591-.052-.464-.112-1.005-.118-1.462-.01-.707.083-1.61.704-2.314.369-.417.845-.578 1.272-.618.404-.038.812.026 1.16.104.343.077.702.186 1.025.284l.028.008c.346.105.658.199.953.266.653.148.904.083.991.024C14.717 9.38 15 9.161 15 8a7 7 0 1 0-7 7"></path>
+                  <a class="nav-link" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false"
+                    style="color:black; padding: 1px 8px;">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                      class="bi bi-palette" viewBox="0 0 16 16">
+                      <path
+                        d="M8 5a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3m4 3a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3M5.5 7a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0m.5 6a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3">
+                      </path>
+                      <path
+                        d="M16 8c0 3.15-1.866 2.585-3.567 2.07C11.42 9.763 10.465 9.473 10 10c-.603.683-.475 1.819-.351 2.92C9.826 14.495 9.996 16 8 16a8 8 0 1 1 8-8m-8 7c.611 0 .654-.171.655-.176.078-.146.124-.464.07-1.119-.014-.168-.037-.37-.061-.591-.052-.464-.112-1.005-.118-1.462-.01-.707.083-1.61.704-2.314.369-.417.845-.578 1.272-.618.404-.038.812.026 1.16.104.343.077.702.186 1.025.284l.028.008c.346.105.658.199.953.266.653.148.904.083.991.024C14.717 9.38 15 9.161 15 8a7 7 0 1 0-7 7">
+                      </path>
                     </svg>
                   </a>
                   <ul class="dropdown-menu" style="background-color: #EDEDED;">
                     <div class="container mt-5">
                       <div class="color-grid">
-                          <div class="color-circle" style="background-color: red;"></div>
-                          <div class="color-circle" style="background-color: cyan;"></div>
-                          <div class="color-circle" style="background-color: green;"></div>
-                          <div class="color-circle" style="background-color: yellow;"></div>
-                          <div class="color-circle" style="background-color: orange;"></div>
-                          <div class="color-circle" style="background-color: violet;"></div>
+                        <div class="color-circle" style="background-color: red;"></div>
+                        <div class="color-circle" style="background-color: cyan;"></div>
+                        <div class="color-circle" style="background-color: green;"></div>
+                        <div class="color-circle" style="background-color: yellow;"></div>
+                        <div class="color-circle" style="background-color: orange;"></div>
+                        <div class="color-circle" style="background-color: violet;"></div>
                       </div>
                     </div>
                     <input style="margin-top: 15px; " id="color-hex" placeholder="#000000">
                   </ul>
                 </li>
-                
+
               </ul>
             </div>
           </div>
@@ -132,18 +164,25 @@
             <div class="modal-body py-3 custom-background-color" style="height: 100px;">
               <ul class="nav">
                 <div>
-                <button type="button" class="noto-serif-ethiopic fw-bold button-invis">
-                  <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-paint-bucket" viewBox="0 0 16 16">
-                    <path d="M6.192 2.78c-.458-.677-.927-1.248-1.35-1.643a3 3 0 0 0-.71-.515c-.217-.104-.56-.205-.882-.02-.367.213-.427.63-.43.896-.003.304.064.664.173 1.044.196.687.556 1.528 1.035 2.402L.752 8.22c-.277.277-.269.656-.218.918.055.283.187.593.36.903.348.627.92 1.361 1.626 2.068.707.707 1.441 1.278 2.068 1.626.31.173.62.305.903.36.262.05.64.059.918-.218l5.615-5.615c.118.257.092.512.05.939-.03.292-.068.665-.073 1.176v.123h.003a1 1 0 0 0 1.993 0H14v-.057a1 1 0 0 0-.004-.117c-.055-1.25-.7-2.738-1.86-3.494a4 4 0 0 0-.211-.434c-.349-.626-.92-1.36-1.627-2.067S8.857 3.052 8.23 2.704c-.31-.172-.62-.304-.903-.36-.262-.05-.64-.058-.918.219zM4.16 1.867c.381.356.844.922 1.311 1.632l-.704.705c-.382-.727-.66-1.402-.813-1.938a3.3 3.3 0 0 1-.131-.673q.137.09.337.274m.394 3.965c.54.852 1.107 1.567 1.607 2.033a.5.5 0 1 0 .682-.732c-.453-.422-1.017-1.136-1.564-2.027l1.088-1.088q.081.181.183.365c.349.627.92 1.361 1.627 2.068.706.707 1.44 1.278 2.068 1.626q.183.103.365.183l-4.861 4.862-.068-.01c-.137-.027-.342-.104-.608-.252-.524-.292-1.186-.8-1.846-1.46s-1.168-1.32-1.46-1.846c-.147-.265-.225-.47-.251-.607l-.01-.068zm2.87-1.935a2.4 2.4 0 0 1-.241-.561c.135.033.324.11.562.241.524.292 1.186.8 1.846 1.46.45.45.83.901 1.118 1.31a3.5 3.5 0 0 0-1.066.091 11 11 0 0 1-.76-.694c-.66-.66-1.167-1.322-1.458-1.847z"></path>
-                  </svg>
-                </button>
+                  <button type="button" class="noto-serif-ethiopic fw-bold button-invis">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor"
+                      class="bi bi-paint-bucket" viewBox="0 0 16 16">
+                      <path
+                        d="M6.192 2.78c-.458-.677-.927-1.248-1.35-1.643a3 3 0 0 0-.71-.515c-.217-.104-.56-.205-.882-.02-.367.213-.427.63-.43.896-.003.304.064.664.173 1.044.196.687.556 1.528 1.035 2.402L.752 8.22c-.277.277-.269.656-.218.918.055.283.187.593.36.903.348.627.92 1.361 1.626 2.068.707.707 1.441 1.278 2.068 1.626.31.173.62.305.903.36.262.05.64.059.918-.218l5.615-5.615c.118.257.092.512.05.939-.03.292-.068.665-.073 1.176v.123h.003a1 1 0 0 0 1.993 0H14v-.057a1 1 0 0 0-.004-.117c-.055-1.25-.7-2.738-1.86-3.494a4 4 0 0 0-.211-.434c-.349-.626-.92-1.36-1.627-2.067S8.857 3.052 8.23 2.704c-.31-.172-.62-.304-.903-.36-.262-.05-.64-.058-.918.219zM4.16 1.867c.381.356.844.922 1.311 1.632l-.704.705c-.382-.727-.66-1.402-.813-1.938a3.3 3.3 0 0 1-.131-.673q.137.09.337.274m.394 3.965c.54.852 1.107 1.567 1.607 2.033a.5.5 0 1 0 .682-.732c-.453-.422-1.017-1.136-1.564-2.027l1.088-1.088q.081.181.183.365c.349.627.92 1.361 1.627 2.068.706.707 1.44 1.278 2.068 1.626q.183.103.365.183l-4.861 4.862-.068-.01c-.137-.027-.342-.104-.608-.252-.524-.292-1.186-.8-1.846-1.46s-1.168-1.32-1.46-1.846c-.147-.265-.225-.47-.251-.607l-.01-.068zm2.87-1.935a2.4 2.4 0 0 1-.241-.561c.135.033.324.11.562.241.524.292 1.186.8 1.846 1.46.45.45.83.901 1.118 1.31a3.5 3.5 0 0 0-1.066.091 11 11 0 0 1-.76-.694c-.66-.66-1.167-1.322-1.458-1.847z">
+                      </path>
+                    </svg>
+                  </button>
                 </div>
 
-                
+
                 <li style="list-style-type: none;">
-                  <a class="nav-link" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false" style="color:black; padding: 1px 8px;">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-plus" viewBox="0 0 16 16">
-                      <path d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4"></path>
+                  <a class="nav-link" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false"
+                    style="color:black; padding: 1px 8px;">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor"
+                      class="bi bi-plus" viewBox="0 0 16 16">
+                      <path
+                        d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4">
+                      </path>
                     </svg>
                   </a>
                   <ul class="dropdown-menu" style="background-color: #EDEDED; width: fit-content;">
@@ -153,27 +192,32 @@
                     </div>
                   </ul>
                 </li>
-            </ul></div>
+              </ul>
+            </div>
           </div>
         </div>
       </div>
     </div>
-    <div class="modal modal-sheet position-static d-block py-4 px-4 py-md-2" tabindex="-1" role="dialog" id="modalSheet" style="width: 170px;">
+    <div class="modal modal-sheet position-static d-block py-4 px-4 py-md-2" tabindex="-1" role="dialog" id="modalSheet"
+      style="width: 170px;">
       <div class="modal-dialog" role="document" style="width: 170px;">
-        
+
       </div>
 
     </div>
   </nav>
 
-    <div style="padding: 180px 0px 0px 400px;" id="new-table"></div>
+  <div style="padding: 180px 0px 0px 400px;" id="new-table"></div>
   </div>
 
   <!-- change -->
 
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+    integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
+    crossorigin="anonymous"></script>
   <script type="module" src="./JS/fire_tables.js"></script>
-  <script type="module" src="./JS/fire_table.js"></script>
+  <script type="module" src="./JS/fire_table.js"></script>l
 </body>
+
 </html>

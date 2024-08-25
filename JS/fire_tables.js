@@ -28,6 +28,7 @@ auth.onAuthStateChanged(user => {
                   owner: user.uid,
                   collaborators: [],
                   date: Timestamp.now(),
+                  lastAccessed: Timestamp.now(),
                 });
           
                 console.log("Table created successfully!");
@@ -70,7 +71,7 @@ auth.onAuthStateChanged(user => {
 
                     const tableData = doc.data();
                     const tableRow = document.createElement('tr');
-                    const formattedDate = formatTimestamp(tableData.date.toDate());
+                    const formattedDate = formatTimestamp(tableData.lastAccessed.toDate());
                     
                     const ownedBy = await retrieveEmail(usersRef, tableData);
 
@@ -95,7 +96,6 @@ auth.onAuthStateChanged(user => {
             }).catch(error => {
                 console.error("Error fetching tables: ", error);
             });
-
         }
         }
        

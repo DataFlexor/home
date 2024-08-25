@@ -1,5 +1,5 @@
 import { app } from './fire_initialize.js';
-import { getFirestore, doc, setDoc, getDoc, updateDoc, arrayUnion } from 'https://www.gstatic.com/firebasejs/10.12.3/firebase-firestore.js';
+import { getFirestore, doc, setDoc, getDoc, updateDoc, arrayUnion, Timestamp } from 'https://www.gstatic.com/firebasejs/10.12.3/firebase-firestore.js';
 import { getAuth } from "https://www.gstatic.com/firebasejs/10.12.3/firebase-auth.js";
 
 const db = getFirestore(app);
@@ -71,7 +71,7 @@ document.addEventListener('DOMContentLoaded', () => {
     chooseRowCol.style.display = 'none';
     numRows = parseInt(document.getElementById('rows').value) || 1;
     numCols = parseInt(document.getElementById('columns').value) || 1;
-    const tableName = individualTableName.value || `table-${Date.now()}`; // Use provided name or a default
+    const tableName = individualTableName.value || `table-${Date.now()}`;
   
     createTable(numRows, numCols, tableName);
   
@@ -114,8 +114,7 @@ document.addEventListener('DOMContentLoaded', () => {
         $('#choose-row-col').hide();
       }
     });
-  });  
-
+  });
 });
 
 function createTable(rows, cols, tableName) {
@@ -164,8 +163,42 @@ function addAutoSaveListeners() {
 function handleInputChange() {
   if (autoSaveTimeout) clearTimeout(autoSaveTimeout);
   autoSaveTimeout = setTimeout(async () => {
-    await saveTableData();
+    try {
+      await saveTableData();
+      await updateLastAccessed();
+    } catch (error) {
+      console.error('Error during save or update:', error);
+    }
   }, 500); 
+}
+
+async function updateLastAccessed() {
+  try {
+    const user = auth.currentUser;
+    if (!user) {
+      console.error('User not authenticated');
+      return;
+    }
+
+    const urlParams = new URLSearchParams(window.location.search);
+    const userId = urlParams.get('userId');
+    const docId = urlParams.get('docId');
+
+    if (!docId) {
+      console.error('Document ID is missing');
+      return;
+    }
+
+    const tableRef = doc(db, `tables/${userId}/tables`, docId);
+
+    await updateDoc(tableRef, {
+      lastAccessed: Timestamp.now(),
+    });
+
+    console.log('lastAccessed updated successfully');
+  } catch (e) {
+    console.error('Error updating lastAccessed: ', e);
+  }
 }
 
 async function saveTableData() {

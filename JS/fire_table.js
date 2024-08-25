@@ -115,6 +115,7 @@ document.addEventListener('DOMContentLoaded', () => {
       }
     });
   });  
+
 });
 
 function createTable(rows, cols, tableName) {

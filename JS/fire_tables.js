@@ -54,27 +54,32 @@ auth.onAuthStateChanged(user => {
             tableRow.setAttribute('height', '50px') // put the height of the row in the tag
             tableRow.setAttribute('style', "border-bottom: 2px solid #dddddd;") // puts the style for the table row
             tableRow.innerHTML = `
-                        <th class="fw-bold header-size noto-serif-ethiopic" style="width: 50%; padding-left: 20px;">Name of table</th>
-                        <th class="fw-bold header-size noto-serif-ethiopic" style="width: 25%;">Last Accessed</th>
-                        <th class="fw-bold header-size noto-serif-ethiopic" style="width: 25%">Download</th>
+                        <th class="fw-bold header-size noto-serif-ethiopic" style="width: 30%; padding-left: 20px;">Name of table</th>
+                        <th class="fw-bold header-size noto-serif-ethiopic" style="width: 30%;">Owned By</th>
+                        <th class="fw-bold header-size noto-serif-ethiopic" style="width: 20%;">Last Accessed</th>
+                        <th class="fw-bold header-size noto-serif-ethiopic" style="width: 20%">Download</th>
                     `;  // putting the table headings into the table row
             tableContainer.appendChild(tableRow); // adding the table row to the table tag
 
             // Reference to the tables collection for the current user
             const tablesRef = collection(db, `tables/${user.uid}/tables`);
-
+            const usersRef = collection(db, `users`);
             // Get all documents in the collection
             getDocs(tablesRef).then(querySnapshot => {
-                querySnapshot.forEach(doc => {
+                querySnapshot.forEach(async doc => {
+
                     const tableData = doc.data();
                     const tableRow = document.createElement('tr');
                     const formattedDate = formatTimestamp(tableData.date.toDate());
+                    
+                    const ownedBy = await retrieveEmail(usersRef, tableData);
 
                     tableRow.setAttribute('class', 'table-row');
                     tableRow.setAttribute('height', '40px');
                     
                     tableRow.innerHTML = `
                         <td style="padding-left: 20px">${tableData.name}</td>
+                        <td>${ownedBy}</td>
                         <td>${formattedDate}</td>
                         <td>Icon/Download Link</td>
                     `;
@@ -90,10 +95,25 @@ auth.onAuthStateChanged(user => {
             }).catch(error => {
                 console.error("Error fetching tables: ", error);
             });
+
         }
         }
        
 });
+
+async function retrieveEmail(usersRef, tableData) {
+    const querySnapshot = await getDocs(usersRef);
+    let ownedBy = '';
+    querySnapshot.forEach(doc => {
+        const userEmails = doc.data();
+        if (userEmails.uid === tableData.owner) {
+            ownedBy = doc.id.split('@')[0];
+            console.log(ownedBy);
+        }
+    });
+    return ownedBy;
+}
+
 
 const signOutBtn = document.getElementById("signoutButton")
 if (signOutBtn) {
@@ -137,7 +157,6 @@ function formatTimestamp(timestamp) {
     return timestamp.toLocaleDateString(undefined, options);
 }
 
-// Example usage assuming tableData.date.toDate() returns a JavaScript Date object
 
 const fontSizeBtn = document.getElementById("fontSize");
 const upFont = document.getElementById("upFont");

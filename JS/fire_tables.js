@@ -26,7 +26,7 @@ auth.onAuthStateChanged(user => {
                 await setDoc(docRef, {
                   name: defaultTableName,
                   owner: user.uid,
-                  collaborators: [],
+                  collaborators: [user.uid],
                   date: Timestamp.now(),
                   lastAccessed: Timestamp.now(),
                 });
@@ -88,7 +88,6 @@ auth.onAuthStateChanged(user => {
                     // Append the row to the table container
                     tableContainer.appendChild(tableRow);
                     
-                    // Optionally, you can add a click event listener to navigate to a specific table
                     tableRow.addEventListener('click', () => {
                          window.location.href = `./table.html?userId=${user.uid}&docId=${doc.id}`;
                     });
@@ -108,7 +107,6 @@ async function retrieveEmail(usersRef, tableData) {
         const userEmails = doc.data();
         if (userEmails.uid === tableData.owner) {
             ownedBy = doc.id.split('@')[0];
-            console.log(ownedBy);
         }
     });
     return ownedBy;

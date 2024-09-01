@@ -9,7 +9,6 @@ const chooseRowCol = document.getElementById('choose-row-col');
 const sendLayoutBtn = document.getElementById('send-layout');
 const newTableDiv = document.getElementById('new-table');
 const titleInput = document.getElementById('main-title');
-const saveBtn = document.getElementById('saveBtn');
 const individualTableName = document.getElementById('individualTableName');
 
 let numRows = 1;
@@ -77,10 +76,6 @@ document.addEventListener('DOMContentLoaded', () => {
   
     // Add event listeners to each input for auto-save
     addAutoSaveListeners();
-  });
-
-  saveBtn.addEventListener('click', async () => {
-    await saveTableData();
   });
 
   $('#sendCollab').click(function () {
@@ -389,6 +384,7 @@ async function shareTable() {
   }
 
   const tableRef = doc(db, `tables/${userId}/tables`, docId); // get all the way into the doc values
+  
 
   try {
     const userSnapshot = await getDoc(doc(db, 'users', email)); // get all the way in the email values
@@ -398,6 +394,8 @@ async function shareTable() {
     }
 
     const collaboratorUid = userSnapshot.data().uid; // get the uid from email doc
+
+    await setDoc(db, `tables/${collaboratorUid}/tables`, docId);
 
     await updateDoc(tableRef, {  // enter the uid from the line above into the array of collaborators updating not replacing
       collaborators: arrayUnion(collaboratorUid) // arrayUnion basically says to put the value in the array if there are no duplicates

@@ -41,8 +41,8 @@
     <button class="menu-button noto-serif-ethiopic fw-bold" id="new-table-btn"
       style="margin: 100px 10px 15px 25px;">+Table</button>
     <input type="text" id="main-title">
-    <button class="menu-button noto-serif-ethiopic fw-bold" id="saveBtn" class="noto-serif-ethiopic">Save</button>
     <button class="menu-button noto-serif-ethiopic fw-bold" id="shareBtn" class="noto-serif-ethiopic">Share</button>
+    <button class="menu-button noto-serif-ethiopic fw-bold" id="graphBtn" class="noto-serif-ethiopic">Graph</button>
   </div>
 
   <div style="position: fixed; margin: 135px 0px 0px 420px; display: none;" id="share-menu">
@@ -207,17 +207,24 @@
     </div>
   </nav>
 
+  <div id="graph-popup">
+    <div id="graph-header">Heading Title</div>
+    <div id="graph-div"></div>
+    <p>some text</p>
+  </div>
+
   <div style="padding: 180px 0px 0px 400px;" id="new-table"></div>
   </div>
 
   <!-- change -->
-
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
     integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
     crossorigin="anonymous"></script>
   <script type="module" src="./JS/fire_tables.js"></script>
-  <script type="module" src="./JS/fire_table.js"></script>l
+  <script type="module" src="./JS/fire_table.js"></script>
+  <script type="module" src="./JS/graphs.js"></script>
 </body>
 
 </html>

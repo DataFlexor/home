@@ -230,6 +230,27 @@ background-color: #f2f2f2;
 
 }
 
+#graph-popup {
+    display: none;
+    position: absolute;
+    top: 50vh;
+    left: 50vw;
+    transform: translate(-50%, -50%);
+    z-index: 9;
+    background-color: #f1f1f1;
+    border: 1px solid #d3d3d3;
+    text-align: center;
+}
+  
+#graph-header {
+    padding: 10px;
+    cursor: move;
+    z-index: 10;
+    background-color: #2196F3;
+    color: #fff;
+}
+
+
 @media only screen and (max-width: 600px) {
     .home-padding {
         padding: 200px 0px;

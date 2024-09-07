@@ -1,10 +1,10 @@
 import { app } from './fire_initialize.js';
 import { getFirestore, doc, setDoc, getDoc, updateDoc, arrayUnion, Timestamp } from 'https://www.gstatic.com/firebasejs/10.12.3/firebase-firestore.js';
 
+
 $('#graphBtn').click(() => {
   $('#graph-popup').toggle();
 });
-
 
 
 dragElement(document.getElementById("graph-popup"));
@@ -49,3 +49,24 @@ function dragElement(elmnt) {
     document.onmousemove = null;
   }
 }
+
+const ctx = document.getElementById('graph-div');
+
+new Chart(ctx, {
+  type: 'bar',
+  data: {
+    labels: ['Red', 'Blue', 'Yellow', 'Green', 'Purple', 'Orange'],
+    datasets: [{
+      label: '# of Votes',
+      data: [12, 19, 3, 5, 2, 3],
+      borderWidth: 1
+    }]
+  },
+  options: {
+    scales: {
+      y: {
+        beginAtZero: true
+      }
+    }
+  }
+});

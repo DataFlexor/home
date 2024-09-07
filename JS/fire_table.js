@@ -304,7 +304,7 @@ function displayTable(tableData, tableName) {
     tableElement.appendChild(row);
   }
 
-  // Insert the table name in the first cell and make it editable
+
   const firstRow = tableElement.querySelector('tr');
   const firstCell = firstRow ? firstRow.querySelector('td') : null;
   if (firstCell) {

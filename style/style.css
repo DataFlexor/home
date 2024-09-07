@@ -237,19 +237,47 @@ background-color: #f2f2f2;
     left: 50vw;
     transform: translate(-50%, -50%);
     z-index: 9;
+    border-radius: 7px;
     background-color: #f1f1f1;
-    border: 1px solid #d3d3d3;
+    border: 1px solid var(--custom-purple);
     text-align: center;
 }
   
 #graph-header {
+    border: none;
+    border-top: 1px solid var(--custom-purple);
+    border-left: 1px solid var(--custom-purple);
+    border-right: 1px solid var(--custom-purple);
+    border-radius: 5px 5px 0px 0px;
     padding: 10px;
     cursor: move;
     z-index: 10;
-    background-color: #2196F3;
+    background-color: var(--custom-purple);
     color: #fff;
 }
 
+#draggable-graph-menu {
+    position: absolute;
+    right: -144px;
+    top: 22px;
+    color: black;
+    border: 1px solid var(--custom-cyan);
+    border-radius: 7px;
+    background-color: var(--custom-grey);
+}
+
+#draggable-graph-menu > ul > li {
+    color: black;
+    border: none;
+    border-bottom: 1px solid black;
+    background-color: var(--custom-grey);
+    cursor: pointer;
+}
+
+#draggable-graph-menu > ul > li:hover {
+    color: var(--custom-beige);
+    background-color: var(--custom-blue);
+}
 
 @media only screen and (max-width: 600px) {
     .home-padding {

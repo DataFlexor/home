@@ -235,6 +235,7 @@ async function saveTableData() {
       tables: {}
     };
 
+    // rest of the table data
     const tableElements = newTableDiv.querySelectorAll('table');
     tableElements.forEach(tableElement => {
       const tableName = tableElement.id;
@@ -245,6 +246,7 @@ async function saveTableData() {
         headers: []
       };
 
+      // just to save rows and columns
       const rows = tableElement.querySelectorAll('tr');
       rows.forEach((row, rowIndex) => {
         const cells = row.querySelectorAll('td');
@@ -268,6 +270,7 @@ async function saveTableData() {
       tableDataObject.tables[tableName] = individualTableData;
     });
 
+    // this line puts all of the arrays into the firebase document
     await setDoc(tableRef, tableDataObject, { merge: true });
 
     console.log('Table data saved successfully');

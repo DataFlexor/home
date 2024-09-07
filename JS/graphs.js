@@ -2,10 +2,6 @@ import { app } from './fire_initialize.js';
 import { getFirestore, doc, setDoc, getDoc, updateDoc, arrayUnion, Timestamp } from 'https://www.gstatic.com/firebasejs/10.12.3/firebase-firestore.js';
 
 
-$('#graphBtn').click(() => {
-  $('#graph-popup').toggle();
-});
-
 
 dragElement(document.getElementById("graph-popup"));
 

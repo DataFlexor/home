@@ -88,6 +88,7 @@ document.addEventListener('DOMContentLoaded', () => {
     $('#shareBtn').click(function(e) {
       e.stopPropagation(); // Prevent click event from bubbling up to document
       // Close the new table menu if it's open
+      $('#graph-popup').hide()
       $('#choose-row-col').hide();
       $('#share-menu').toggle();
     });
@@ -96,9 +97,19 @@ document.addEventListener('DOMContentLoaded', () => {
     $('#new-table-btn').click(function(e) {
       e.stopPropagation(); // Prevent click event from bubbling up to document
       // Close the share menu if it's open
+      $('#graph-popup').hide()
       $('#share-menu').hide();
       $('#choose-row-col').toggle();
     });
+
+    $('#graphBtn').click(function(e) {
+      e.stopPropagation(); // Prevent click event from bubbling up to document
+      // Close the share menu if it's open
+      $('#choose-row-col').hide();
+      $('#share-menu').hide();
+      $('#graph-popup').toggle();
+    });
+
   
     // Hide the open menu when clicking outside of it
     $(document).click(function(e) {
@@ -107,6 +118,9 @@ document.addEventListener('DOMContentLoaded', () => {
       }
       if (!$(e.target).closest('#choose-row-col, #new-table-btn').length) {
         $('#choose-row-col').hide();
+      }
+      if (!$(e.target).closest('#graph-popup, #graphBtn').length) {
+        $('#graph-popup').hide();
       }
     });
   });

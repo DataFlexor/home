@@ -88,7 +88,7 @@ document.addEventListener('DOMContentLoaded', () => {
     $('#shareBtn').click(function(e) {
       e.stopPropagation(); // Prevent click event from bubbling up to document
       // Close the new table menu if it's open
-      $('#graph-popup').hide()
+      $('#graph-popup').hide();
       $('#choose-row-col').hide();
       $('#share-menu').toggle();
     });
@@ -97,7 +97,7 @@ document.addEventListener('DOMContentLoaded', () => {
     $('#new-table-btn').click(function(e) {
       e.stopPropagation(); // Prevent click event from bubbling up to document
       // Close the share menu if it's open
-      $('#graph-popup').hide()
+      $('#graph-popup').hide();
       $('#share-menu').hide();
       $('#choose-row-col').toggle();
     });
@@ -108,6 +108,33 @@ document.addEventListener('DOMContentLoaded', () => {
       $('#choose-row-col').hide();
       $('#share-menu').hide();
       $('#graph-popup').toggle();
+
+      if ( $('#graph-popup').is(":hidden")) {
+        $('#graph-popup').css({
+          'top': '50vh',
+          'left': '50vw'
+        })
+      }
+    });
+
+    $('#graph-popup-x').click(function(e) {
+      e.stopPropagation();
+      $('#graph-popup').hide();
+      if ( $('#graph-popup').is(":hidden")) {
+        $('#graph-popup').css({
+          'top': '50vh',
+          'left': '50vw'
+        })
+      }
+    });
+
+    $('#change-graph-btn').click(function(e) {
+      e.stopPropagation(); // Prevent click event from bubbling up to document
+      // Close the share menu if it's open
+      $('#choose-row-col').hide();
+      $('#share-menu').hide();
+      $('#graph-popup').show();
+      $('#draggable-graph-menu').toggle();
     });
 
   
@@ -119,8 +146,8 @@ document.addEventListener('DOMContentLoaded', () => {
       if (!$(e.target).closest('#choose-row-col, #new-table-btn').length) {
         $('#choose-row-col').hide();
       }
-      if (!$(e.target).closest('#graph-popup, #graphBtn').length) {
-        $('#graph-popup').hide();
+      if (!$(e.target).closest('#draggable-graph-menu, #change-graph-btn').length) {
+        $('#draggable-graph-menu').hide();
       }
     });
   });

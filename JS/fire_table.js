@@ -31,7 +31,7 @@ document.addEventListener('DOMContentLoaded', () => {
       return;
     }
 
-    const tableRef = doc(db, `tables/${userId}/tables`, docId);
+    const tableRef = doc(db, `tables`, docId);
 
     try {
       const docSnapshot = await getDoc(tableRef);
@@ -217,7 +217,6 @@ async function updateLastAccessed() {
     }
 
     const urlParams = new URLSearchParams(window.location.search);
-    const userId = urlParams.get('userId');
     const docId = urlParams.get('docId');
 
     if (!docId) {
@@ -225,7 +224,7 @@ async function updateLastAccessed() {
       return;
     }
 
-    const tableRef = doc(db, `tables/${userId}/tables`, docId);
+    const tableRef = doc(db, `tables`, docId);
 
     await updateDoc(tableRef, {
       lastAccessed: Timestamp.now(),
@@ -246,7 +245,6 @@ async function saveTableData() {
     }
 
     const urlParams = new URLSearchParams(window.location.search);
-    const userId = urlParams.get('userId');
     const docId = urlParams.get('docId');
 
     if (!docId) {
@@ -254,11 +252,10 @@ async function saveTableData() {
       return;
     }
 
-    const tableRef = doc(db, `tables/${userId}/tables`, docId);
+    const tableRef = doc(db, `tables`, docId);
 
     const tableDataObject = {
       name: titleInput.value || "Untitled Table",
-      owner: userId,
       tables: {}
     };
 
@@ -380,7 +377,6 @@ async function updateTableName(tableElement, newTableName) {
     }
 
     const urlParams = new URLSearchParams(window.location.search);
-    const userId = urlParams.get('userId');
     const docId = urlParams.get('docId');
 
     if (!docId) {
@@ -388,7 +384,7 @@ async function updateTableName(tableElement, newTableName) {
       return;
     }
 
-    const tableRef = doc(db, `tables/${userId}/tables`, docId);
+    const tableRef = doc(db, `tables`, docId);
 
     // Get the existing table data
     const tableData = (await getDoc(tableRef)).data();
@@ -427,7 +423,7 @@ async function shareTable() {
     return;
   }
 
-  const tableRef = doc(db, `tables/${userId}/tables`, docId); // get all the way into the doc values
+  const tableRef = doc(db, `tables`, docId); 
   
 
   try {
@@ -439,8 +435,6 @@ async function shareTable() {
 
     const collaboratorUid = userSnapshot.data().uid; // get the uid from email doc
 
-    await setDoc(db, `tables/${collaboratorUid}/tables`, docId);
-
     await updateDoc(tableRef, {  // enter the uid from the line above into the array of collaborators updating not replacing
       collaborators: arrayUnion(collaboratorUid) // arrayUnion basically says to put the value in the array if there are no duplicates
     });
@@ -450,5 +444,4 @@ async function shareTable() {
   } catch (error) {
     console.error('Error adding collaborator: ', error); // error if not successful
   }
-
 }

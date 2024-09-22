@@ -20,13 +20,13 @@ auth.onAuthStateChanged(user => {
               const defaultTableName = "Untitled Table"; // Default table name
           
               try {
-                const tablesRef = collection(db, `tables/${user.uid}/tables`);
+                const tablesRef = collection(db, `tables`);
                 const docRef = doc(tablesRef); // Firestore will generate a unique ID
           
                 await setDoc(docRef, {
                   name: defaultTableName,
                   owner: user.uid,
-                  collaborators: [user.uid],
+                  collaborators: [],
                   date: Timestamp.now(),
                   lastAccessed: Timestamp.now(),
                 });
@@ -63,34 +63,37 @@ auth.onAuthStateChanged(user => {
             tableContainer.appendChild(tableRow); // adding the table row to the table tag
 
             // Reference to the tables collection for the current user
-            const tablesRef = collection(db, `tables/${user.uid}/tables`);
+            const tablesRef = collection(db, `tables`);
             const usersRef = collection(db, `users`);
             // Get all documents in the collection
             getDocs(tablesRef).then(querySnapshot => {
                 querySnapshot.forEach(async doc => {
 
                     const tableData = doc.data();
-                    const tableRow = document.createElement('tr');
-                    const formattedDate = formatTimestamp(tableData.lastAccessed.toDate());
-                    
-                    const ownedBy = await retrieveEmail(usersRef, tableData);
 
-                    tableRow.setAttribute('class', 'table-row');
-                    tableRow.setAttribute('height', '40px');
-                    
-                    tableRow.innerHTML = `
-                        <td style="padding-left: 20px">${tableData.name}</td>
-                        <td>${ownedBy}</td>
-                        <td>${formattedDate}</td>
-                        <td>Icon/Download Link</td>
-                    `;
+                    if (tableData.owner === user.uid || tableData.collaborators.includes(user.uid)) {
+                        const tableRow = document.createElement('tr');
+                        const formattedDate = formatTimestamp(tableData.lastAccessed.toDate());
+                        
+                        const ownedBy = await retrieveEmail(usersRef, tableData);
 
-                    // Append the row to the table container
-                    tableContainer.appendChild(tableRow);
-                    
-                    tableRow.addEventListener('click', () => {
-                         window.location.href = `./table.html?userId=${user.uid}&docId=${doc.id}`;
-                    });
+                        tableRow.setAttribute('class', 'table-row');
+                        tableRow.setAttribute('height', '40px');
+                        
+                        tableRow.innerHTML = `
+                            <td style="padding-left: 20px">${tableData.name}</td>
+                            <td>${ownedBy}</td>
+                            <td>${formattedDate}</td>
+                            <td>Icon/Download Link</td>
+                        `;
+
+                        // Append the row to the table container
+                        tableContainer.appendChild(tableRow);
+                        
+                        tableRow.addEventListener('click', () => {
+                            window.location.href = `./table.html?userId=${user.uid}&docId=${doc.id}`;
+                        });
+                    }
                 });
             }).catch(error => {
                 console.error("Error fetching tables: ", error);

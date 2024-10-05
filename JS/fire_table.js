@@ -470,9 +470,35 @@ function addTableButton(tableName) {
     }
   });
 
-  // newButton.addEventListener('contextmenu', () => {
+  newButton.addEventListener('contextmenu', function(e) {
+    e.preventDefault();
 
-  // });
+    const customMenu = document.createElement('div');
+    customMenu.innerHTML = `
+      <ul>
+        <li>Rename</li>
+        <li>Graph</li>
+        <li>Delete</li>
+      </ul>
+    `
+    customMenu.style.position = 'absolute';
+    customMenu.style.left = e.clientX + 'px';
+    customMenu.style.top = e.clientY + 'px';
+    customMenu.style.background = '#fff';
+    customMenu.style.border = '1px solid #ccc';
+    customMenu.style.zIndex = '1000';
+
+
+    document.body.appendChild(customMenu);
+    
+    document.addEventListener('click', function(event) {
+      if (!customMenu.contains(event.target)) {
+        customMenu.remove();
+        document.removeEventListener('click', removeMenu);
+      }
+    });
+
+  });
 
   modalSheet.appendChild(newButton);
 }

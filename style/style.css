@@ -279,6 +279,19 @@ background-color: #f2f2f2;
     background-color: var(--custom-blue);
 }
 
+.tab-border {
+    width: 170px;
+    border: none;
+    background-color: #5C2FC2;
+    color: white;
+}
+
+.tab-border:hover {
+    background-color: white;
+    color: #5C2FC2;
+}
+
+
 @media only screen and (max-width: 600px) {
     .home-padding {
         padding: 200px 0px;

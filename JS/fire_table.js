@@ -73,6 +73,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const tableName = individualTableName.value || `table-${Date.now()}`;
   
     createTable(numRows, numCols, tableName);
+    // createWindows(tableName);
   
     // Add event listeners to each input for auto-save
     addAutoSaveListeners();
@@ -170,6 +171,7 @@ function createTable(rows, cols, tableName) {
         input.setAttribute('type', 'text');
         input.value = tableName;
         input.classList.add('table-name-input');
+        input.readOnly = true;
         input.addEventListener('blur', () => {
           updateTableName(table, input.value);
         });
@@ -183,9 +185,13 @@ function createTable(rows, cols, tableName) {
 
     table.appendChild(row);
   }
+  // use tableName to put the single table name into the left menu
+  
 
   newTableDiv.appendChild(table);
   newTableDiv.style.display = 'block';
+
+  addTableButton(tableName);
   addAutoSaveListeners();
 }
 
@@ -309,6 +315,7 @@ function displayTable(tableData, tableName) {
   const tableElement = document.createElement('table');
   tableElement.classList.add('table-container');
   tableElement.id = tableName; // Set the ID to the table name
+  tableElement.style.display = 'none';
 
   let maxRow = 0;
   let maxCol = 0;
@@ -348,6 +355,7 @@ function displayTable(tableData, tableName) {
 
   const firstRow = tableElement.querySelector('tr');
   const firstCell = firstRow ? firstRow.querySelector('td') : null;
+  
   if (firstCell) {
     firstCell.innerHTML = ''; // Clear any existing content
     const input = document.createElement('input');
@@ -362,6 +370,8 @@ function displayTable(tableData, tableName) {
   }
 
   newTableDiv.appendChild(tableElement);
+
+  addTableButton(tableName);
   addAutoSaveListeners();
 }
 
@@ -444,4 +454,25 @@ async function shareTable() {
   } catch (error) {
     console.error('Error adding collaborator: ', error); // error if not successful
   }
+}
+
+function addTableButton(tableName) {
+  const modalSheet = document.getElementById("sideBarMenuSingleTable");
+
+  const newButton = document.createElement('button');
+  newButton.classList.add('tab-border');
+  newButton.textContent = tableName;
+
+  newButton.addEventListener('click', () => {
+    const table = document.getElementById(tableName);
+    if (table) {
+      table.style.display = table.style.display === 'none' ? 'block' : 'none';
+    }
+  });
+
+  // newButton.addEventListener('contextmenu', () => {
+
+  // });
+
+  modalSheet.appendChild(newButton);
 }

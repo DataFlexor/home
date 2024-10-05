@@ -1,9 +1,30 @@
 import { app } from './fire_initialize.js';
-import { getFirestore, doc, setDoc, getDoc, updateDoc, arrayUnion, Timestamp } from 'https://www.gstatic.com/firebasejs/10.12.3/firebase-firestore.js';
+import { getFirestore, doc, getDoc} from 'https://www.gstatic.com/firebasejs/10.12.3/firebase-firestore.js';
+import { getAuth } from "https://www.gstatic.com/firebasejs/10.12.3/firebase-auth.js";
 
 
+const db = getFirestore(app);
+const auth = getAuth(app);
 
-dragElement(document.getElementById("graph-popup"));
+document.addEventListener('DOMContentLoaded', () => {
+  auth.onAuthStateChanged(async user => {
+    if (!user) {
+      window.location = 'login.html';
+      return;
+    }
+
+    const urlParams = new URLSearchParams(window.location.search);
+    const userId = urlParams.get('userId');
+    const docId = urlParams.get('docId');
+
+    if (!userId || !docId) {
+      console.error('userId or docId is missing or invalid.');
+      return;
+    }
+
+    dragElement(document.getElementById("graph-popup"));
+  });
+});
 
 function dragElement(elmnt) {
   var pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;

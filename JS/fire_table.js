@@ -1,5 +1,5 @@
 import { app } from './fire_initialize.js';
-import { getFirestore, doc, setDoc, getDoc, updateDoc, arrayUnion, Timestamp } from 'https://www.gstatic.com/firebasejs/10.12.3/firebase-firestore.js';
+import { getFirestore, doc, setDoc, getDoc, updateDoc, deleteField, arrayUnion, Timestamp } from 'https://www.gstatic.com/firebasejs/10.12.3/firebase-firestore.js';
 import { getAuth } from "https://www.gstatic.com/firebasejs/10.12.3/firebase-auth.js";
 
 const db = getFirestore(app);
@@ -172,9 +172,6 @@ function createTable(rows, cols, tableName) {
         input.value = tableName;
         input.classList.add('table-name-input');
         input.readOnly = true;
-        input.addEventListener('blur', () => {
-          updateTableName(table, input.value);
-        });
       } else {
         input.setAttribute('type', (i === 0 || j === 0) ? 'text' : 'number');
       }
@@ -363,9 +360,6 @@ function displayTable(tableData, tableName) {
     input.disabled = true;
     input.value = tableName;
     input.classList.add('table-name-input');
-    input.addEventListener('blur', () => {
-      updateTableName(tableElement, input.value);
-    });
     firstCell.appendChild(input);
   }
 
@@ -373,48 +367,6 @@ function displayTable(tableData, tableName) {
 
   addTableButton(tableName);
   addAutoSaveListeners();
-}
-
-async function updateTableName(tableElement, newTableName) {
-  // Check if the new table name is different from the current ID
-  if (tableElement.id === newTableName) return;
-
-  try {
-    const user = auth.currentUser;
-    if (!user) {
-      console.error('User not authenticated');
-      return;
-    }
-
-    const urlParams = new URLSearchParams(window.location.search);
-    const docId = urlParams.get('docId');
-
-    if (!docId) {
-      console.error('Document ID is missing');
-      return;
-    }
-
-    const tableRef = doc(db, `tables`, docId);
-
-    // Get the existing table data
-    const tableData = (await getDoc(tableRef)).data();
-
-    // Update the table name in the data object
-    const oldTableName = tableElement.id;
-    const updatedTableData = { ...tableData };
-    updatedTableData.tables[newTableName] = updatedTableData.tables[oldTableName];
-    delete updatedTableData.tables[oldTableName];
-
-    // Save the updated data to Firestore
-    await setDoc(tableRef, updatedTableData, { merge: true });
-
-    // Update the table element's ID and name
-    tableElement.id = newTableName;
-
-    console.log('Table name updated successfully');
-  } catch (e) {
-    console.error('Error updating table name: ', e);
-  }
 }
 
 async function shareTable() {
@@ -457,6 +409,10 @@ async function shareTable() {
 }
 
 function addTableButton(tableName) {
+
+  const urlParams = new URLSearchParams(window.location.search);
+  const docId = urlParams.get('docId');
+
   const modalSheet = document.getElementById("sideBarMenuSingleTable");
 
   const newButton = document.createElement('button');
@@ -472,32 +428,61 @@ function addTableButton(tableName) {
 
   newButton.addEventListener('contextmenu', function(e) {
     e.preventDefault();
+    e.stopPropagation();
 
     const customMenu = document.createElement('div');
-    customMenu.innerHTML = `
-      <ul>
-        <li>Rename</li>
-        <li>Graph</li>
-        <li>Delete</li>
-      </ul>
+    customMenu.setAttribute('id', 'button-rightclick-menu')
+    customMenu.innerHTML = 
+    `<ul class="list-group" style="border: none; text-decoration: none">
+      <li id="renameSingleTable" class="list-group-item" >Rename</li>
+      <li id="graphSingleTable" class="list-group-item" >Graph</li>
+      <li id="deleteSingleTable" class="list-group-item" style="border: none;">Delete</li>
+    </ul>
     `
     customMenu.style.position = 'absolute';
     customMenu.style.left = e.clientX + 'px';
     customMenu.style.top = e.clientY + 'px';
-    customMenu.style.background = '#fff';
     customMenu.style.border = '1px solid #ccc';
     customMenu.style.zIndex = '1000';
 
 
     document.body.appendChild(customMenu);
+
+    // rename a table
+    const renameButton = document.getElementById('renameSingleTable');
+    renameButton.addEventListener('click', async function() {
+      const newName = prompt('Enter new table name: ', tableName);
+      if (newName && newName !== tableName) {
+        try {
+          const tableDocRef = doc (db, `tables`, docId);
+          const tableDocSnap = await getDoc(tableDocRef);
+
+          if (tableDocSnap.exists()) {
+            const tableData = tableDocSnap.data().tables[tableName];
+
+            await updateDoc(tableDocRef, {
+              [`tables.${tableName}`]: deleteField(),
+              [`tables.${newName}`] : tableData
+            });
+
+          }
+          newButton.textContent = newName;
+          newButton.setAttribute('id', newName);
+          tableName = newName;
+
+        } catch (error) {
+          console.error("Error renaming table:", error);
+        }
+      }
+      customMenu.remove()
+    });
+
     
     document.addEventListener('click', function(event) {
       if (!customMenu.contains(event.target)) {
         customMenu.remove();
-        document.removeEventListener('click', removeMenu);
       }
     });
-
   });
 
   modalSheet.appendChild(newButton);

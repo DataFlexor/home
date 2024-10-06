@@ -287,8 +287,29 @@ background-color: #f2f2f2;
 }
 
 .tab-border:hover {
-    background-color: white;
-    color: #5C2FC2;
+    background-color: #613db4;
+    color: white;
+}
+
+#button-rightclick-menu {
+    position: absolute;
+    color: black;
+    border: 1px solid var(--custom-cyan);
+    border-radius: 7px;
+    background-color: var(--custom-grey);
+}
+
+#button-rightclick-menu > ul > li {
+    color: black;
+    border: none;
+    border-bottom: 1px solid black;
+    background-color: var(--custom-grey);
+    cursor: pointer;
+}
+
+#button-rightclick-menu > ul > li:hover {
+    color: var(--custom-beige);
+    background-color: var(--custom-blue);
 }
 
 

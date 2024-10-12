@@ -347,3 +347,13 @@ background-color: #f2f2f2;
         width: 275px;
     }
 }
+
+.collaborator-indicator {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 255, 0.2); /* Default color (light blue) */
+    border: 2px solid rgba(0, 0, 255, 0.8);  /* Blue border */
+}

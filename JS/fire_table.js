@@ -487,3 +487,81 @@ function addTableButton(tableName) {
 
   modalSheet.appendChild(newButton);
 }
+
+function updateCurrentEditPosition(row, column) {
+  const userId = auth.currentUser.uid;  // Get the current user's ID
+  const tableRef = doc(db, 'tables', docId);  // Reference to the specific table document
+
+  // Update Firestore with the user's current editing position
+  updateDoc(tableRef, {
+      [`currentEdits.${userId}`]: { row: row, column: column }
+  });
+}
+
+// Event listener for when a user selects a cell
+document.querySelectorAll('td').forEach(cell => {
+  cell.addEventListener('click', () => {
+      const row = cell.dataset.row;
+      const column = cell.dataset.column;
+
+      updateCurrentEditPosition(row, column);  // Track the current user's position
+  });
+});
+
+// Reference to the specific table document in Firestore
+const tableRef = doc(db, 'tables', docId);
+
+// Real-time listener for collaborator edits
+onSnapshot(tableRef, (docSnapshot) => {
+    const data = docSnapshot.data();
+
+    if (data.currentEdits) {
+        updateCollaboratorCursors(data.currentEdits);  // Update UI with collaborator edits
+    }
+});
+
+function updateCollaboratorCursors(currentEdits) {
+    // Remove previous indicators
+    document.querySelectorAll('.collaborator-indicator').forEach(el => el.remove());
+
+    // Loop over each user's current editing position
+    Object.keys(currentEdits).forEach(userId => {
+        const { row, column } = currentEdits[userId];
+
+        // Find the cell being edited and show an indicator
+        const cell = document.querySelector(`[data-row="${row}"][data-column="${column}"]`);
+        if (cell) {
+            const indicator = document.createElement('div');
+            indicator.classList.add('collaborator-indicator');
+            indicator.style.position = 'absolute';
+            indicator.style.top = 0;
+            indicator.style.left = 0;
+            indicator.style.width = '100%';
+            indicator.style.height = '100%';
+            indicator.style.backgroundColor = 'rgba(0, 0, 255, 0.2)';  // Example: light blue highlight
+            cell.appendChild(indicator);
+        }
+    });
+}
+
+const colors = {
+  "user1": "rgba(255, 0, 0, 0.2)",  // Red
+  "user2": "rgba(0, 255, 0, 0.2)",  // Green
+  "user3": "rgba(0, 0, 255, 0.2)"   // Blue
+};
+
+function updateCollaboratorCursors(currentEdits) {
+  document.querySelectorAll('.collaborator-indicator').forEach(el => el.remove());
+
+  Object.keys(currentEdits).forEach(userId => {
+      const { row, column } = currentEdits[userId];
+      const cell = document.querySelector(`[data-row="${row}"][data-column="${column}"]`);
+
+      if (cell) {
+          const indicator = document.createElement('div');
+          indicator.classList.add('collaborator-indicator');
+          indicator.style.backgroundColor = colors[userId] || 'rgba(0, 0, 0, 0.2)';  // Default color
+          cell.appendChild(indicator);
+      }
+  });
+}

@@ -1,6 +1,7 @@
 import { app } from './fire_initialize.js';
 import { getFirestore, doc, setDoc, getDoc, updateDoc, deleteField, arrayUnion, Timestamp } from 'https://www.gstatic.com/firebasejs/10.12.3/firebase-firestore.js';
 import { getAuth } from "https://www.gstatic.com/firebasejs/10.12.3/firebase-auth.js";
+import { drawGraph, dragElement} from './graphs.js';
 
 const db = getFirestore(app);
 const auth = getAuth(app);
@@ -101,21 +102,6 @@ document.addEventListener('DOMContentLoaded', () => {
       $('#graph-popup').hide();
       $('#share-menu').hide();
       $('#choose-row-col').toggle();
-    });
-
-    $('#graphBtn').click(function(e) {
-      e.stopPropagation(); // Prevent click event from bubbling up to document
-      // Close the share menu if it's open
-      $('#choose-row-col').hide();
-      $('#share-menu').hide();
-      $('#graph-popup').toggle();
-
-      if ( $('#graph-popup').is(":hidden")) {
-        $('#graph-popup').css({
-          'top': '50vh',
-          'left': '50vw'
-        })
-      }
     });
 
     $('#graph-popup-x').click(function(e) {
@@ -430,6 +416,11 @@ function addTableButton(tableName) {
     e.preventDefault();
     e.stopPropagation();
 
+    const existingMenu = document.getElementById('button-rightclick-menu');
+    if (existingMenu) {
+      existingMenu.remove();
+    };
+
     const customMenu = document.createElement('div');
     customMenu.setAttribute('id', 'button-rightclick-menu')
     customMenu.innerHTML = 
@@ -444,7 +435,6 @@ function addTableButton(tableName) {
     customMenu.style.top = e.clientY + 'px';
     customMenu.style.border = '1px solid #ccc';
     customMenu.style.zIndex = '1000';
-
 
     document.body.appendChild(customMenu);
 
@@ -477,7 +467,66 @@ function addTableButton(tableName) {
       customMenu.remove()
     });
 
-    
+    // delete a table
+
+    const deleteButton = document.getElementById('deleteSingleTable');
+    deleteButton.addEventListener('click', async function () {
+      const confirmation = confirm(`Are you sure you want to delete the table "${tableName}"?`);
+
+      if (confirmation) {
+        try {
+          const tableDocRef = doc(db, `tables`, docId);
+          const tableDocSnap = await getDoc(tableDocRef);
+
+          if (tableDocSnap.exists()) {
+            await updateDoc(tableDocRef, {
+              [`tables.${tableName}`]: deleteField()
+            });
+            newButton.remove();
+
+            const table = document.getElementById(tableName);
+            if (table) {
+              table.remove();
+            }
+
+            console.log(`Table "${tableName}" deleted successfully.`);
+          }
+        } catch (error) {
+          console.log("Error delete table:", error)
+        }
+      }
+      customMenu.remove();
+
+    });
+
+    // graph for each table
+    const graphButton = document.getElementById('graphSingleTable');
+    graphButton.addEventListener('click', async function() {
+      try {
+        const tableDocRef = doc(db, `tables`, docId);
+        const tableDocSnap = await getDoc(tableDocRef);
+
+        if (tableDocSnap.exists()) {
+          const tableData = tableDocSnap.data().tables[tableName];
+
+          drawGraph(tableData, tableName);
+
+          $('#graph-popup').css({
+            'top': '50vh',
+            'left': '50vw'
+          });
+
+          $('#graph-popup').show();
+
+          dragElement(document.getElementById("graph-popup"));
+        }
+
+      } catch (error) {
+        console.log('Error generation graph:', error)
+      }
+      customMenu.remove
+    });
+
     document.addEventListener('click', function(event) {
       if (!customMenu.contains(event.target)) {
         customMenu.remove();

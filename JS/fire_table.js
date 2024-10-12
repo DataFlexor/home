@@ -569,29 +569,29 @@ onSnapshot(tableRef, (docSnapshot) => {
     }
 });
 
-function updateCollaboratorCursors(currentEdits) {
-    // Remove previous indicators
-    document.querySelectorAll('.collaborator-indicator').forEach(el => el.remove());
+// function updateCollaboratorCursors(currentEdits) {
+//     // Remove previous indicators
+//     document.querySelectorAll('.collaborator-indicator').forEach(el => el.remove());
 
-    // Loop over each user's current editing position
-    Object.keys(currentEdits).forEach(userId => {
-        const { row, column } = currentEdits[userId];
+//     // Loop over each user's current editing position
+//     Object.keys(currentEdits).forEach(userId => {
+//         const { row, column } = currentEdits[userId];
 
-        // Find the cell being edited and show an indicator
-        const cell = document.querySelector(`[data-row="${row}"][data-column="${column}"]`);
-        if (cell) {
-            const indicator = document.createElement('div');
-            indicator.classList.add('collaborator-indicator');
-            indicator.style.position = 'absolute';
-            indicator.style.top = 0;
-            indicator.style.left = 0;
-            indicator.style.width = '100%';
-            indicator.style.height = '100%';
-            indicator.style.backgroundColor = 'rgba(0, 0, 255, 0.2)';  // Example: light blue highlight
-            cell.appendChild(indicator);
-        }
-    });
-}
+//         // Find the cell being edited and show an indicator
+//         const cell = document.querySelector(`[data-row="${row}"][data-column="${column}"]`);
+//         if (cell) {
+//             const indicator = document.createElement('div');
+//             indicator.classList.add('collaborator-indicator');
+//             indicator.style.position = 'absolute';
+//             indicator.style.top = 0;
+//             indicator.style.left = 0;
+//             indicator.style.width = '100%';
+//             indicator.style.height = '100%';
+//             indicator.style.backgroundColor = 'rgba(0, 0, 255, 0.2)';  // Example: light blue highlight
+//             cell.appendChild(indicator);
+//         }
+//     });
+// }
 
 const colors = {
   "user1": "rgba(255, 0, 0, 0.2)",  // Red

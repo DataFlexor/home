@@ -1,32 +1,34 @@
-import { app } from './fire_initialize.js';
-import { getFirestore, doc, getDoc} from 'https://www.gstatic.com/firebasejs/10.12.3/firebase-firestore.js';
-import { getAuth } from "https://www.gstatic.com/firebasejs/10.12.3/firebase-auth.js";
+export function drawGraph(tableData, tableName) {
+  const labels = tableData.headers || [];
+  const data = tableData.data.map(row => row.text);
 
+  const ctx = document.getElementById('graph-div').getContext('2d');
 
-const db = getFirestore(app);
-const auth = getAuth(app);
+  if (window.myChart) {
+    window.myChart.destroy();
+  }
 
-document.addEventListener('DOMContentLoaded', () => {
-  auth.onAuthStateChanged(async user => {
-    if (!user) {
-      window.location = 'login.html';
-      return;
+  window.myChart = new Chart(ctx, {
+    type: 'bar',
+    data: {
+      labels: labels,
+      datasets: [{
+        label: `Data from ${tableName}`,
+        data: data,
+        borderWidth: 1
+      }]
+    },
+    options: {
+      scales: {
+        y: {
+          beginAtZero: true
+        }
+      }
     }
-
-    const urlParams = new URLSearchParams(window.location.search);
-    const userId = urlParams.get('userId');
-    const docId = urlParams.get('docId');
-
-    if (!userId || !docId) {
-      console.error('userId or docId is missing or invalid.');
-      return;
-    }
-
-    dragElement(document.getElementById("graph-popup"));
   });
-});
+}
 
-function dragElement(elmnt) {
+export function dragElement(elmnt) {
   var pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
   if (document.getElementById(elmnt.id + "header")) {
     // if present, the header is where you move the DIV from:
@@ -66,24 +68,3 @@ function dragElement(elmnt) {
     document.onmousemove = null;
   }
 }
-
-const ctx = document.getElementById('graph-div');
-
-new Chart(ctx, {
-  type: 'bar',
-  data: {
-    labels: ['Red', 'Blue', 'Yellow', 'Green', 'Purple', 'Orange'],
-    datasets: [{
-      label: '# of Votes',
-      data: [12, 19, 3, 5, 2, 3],
-      borderWidth: 1
-    }]
-  },
-  options: {
-    scales: {
-      y: {
-        beginAtZero: true
-      }
-    }
-  }
-});

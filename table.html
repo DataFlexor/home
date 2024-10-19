@@ -204,9 +204,9 @@
     </div>
   </nav>
 
-  <div id="graph-popup" style="width: 500px; height: 400px;">
+  <div id="graph-popup" style="width: 600px; height: 400px;">
     <div id="graph-header" style="display: flex; justify-content: space-between;">
-      <p>Table Heading</p>
+      <p id="graph-heading">Table Heading</p>
       <div>
           <a href="#" id="change-graph-btn" style="text-decoration: none; color: white; margin-right: 5px;"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-menu-button-wide" viewBox="0 0 16 16">
           <path d="M0 1.5A1.5 1.5 0 0 1 1.5 0h13A1.5 1.5 0 0 1 16 1.5v2A1.5 1.5 0 0 1 14.5 5h-13A1.5 1.5 0 0 1 0 3.5zM1.5 1a.5.5 0 0 0-.5.5v2a.5.5 0 0 0 .5.5h13a.5.5 0 0 0 .5-.5v-2a.5.5 0 0 0-.5-.5z"/>
@@ -223,11 +223,11 @@
 
     <div id="draggable-graph-menu" style="display: none;">
       <ul class="list-group" style="border: none;">
-        <li class="list-group-item" >An active item</li>
-        <li class="list-group-item" >A second item</li>
-        <li class="list-group-item" >A third item</li>
-        <li class="list-group-item" >A fourth item</li>
-        <li class="list-group-item" style="border: none;">And a fifth one</li>
+        <li class="list-group-item" id="barChange">Bar</li>
+        <li class="list-group-item" id="lineChange">Line</li>
+        <li class="list-group-item" id="pieChange">Pie</li>
+        <li class="list-group-item" id="radarChange">Radar</li>
+        <li class="list-group-item" style="border: none;">(Scatter)</li>
       </ul>
     </div>
 

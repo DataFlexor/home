@@ -258,7 +258,7 @@ background-color: #f2f2f2;
 
 #draggable-graph-menu {
     position: absolute;
-    right: -144px;
+    right: -100px;
     top: 22px;
     color: black;
     border: 1px solid var(--custom-cyan);

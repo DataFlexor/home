@@ -1,22 +1,71 @@
+
+let currentChart = 'bar';
+let savedTableData = null;
+let savedTableName = null;
+let myChart;
+
 export function drawGraph(tableData, tableName) {
-  const labels = tableData.headers || [];
-  const data = tableData.data.map(row => row.text);
+
+  savedTableData = tableData;
+  savedTableName = tableName;
+
+  const graph_heading = document.getElementById('graph-heading');
+  const labels = tableData.headers.slice(1) || [];
+  graph_heading.innerText = tableName || 'Table data';
+  
+  let allTablesData = [];
+  let currentRow = 1;
+  let innerRow = [];
+
+  for (let i = 0; i < tableData.data.length; i++) {
+    if (tableData.data[i]['row'] === currentRow) {
+      innerRow.push(tableData.data[i]['text']);
+    } else {
+      allTablesData.push(innerRow);
+      innerRow = [];
+      innerRow.push(tableData.data[i]['text']);
+      currentRow++;
+    }
+  }
+  allTablesData.push(innerRow);
+  console.log(allTablesData);
+  allTablesData = allTablesData.slice(1) || [];
+  console.log(allTablesData);
+
+  let tablesData = [];
+  let tempData = {};
+  let formatData= [];
+
+  for (let i = 0; i < allTablesData.length; i++) {
+    console.log("new for loop", allTablesData[i]);
+    for (let j = 0; j < allTablesData[i].length; j++) {
+      console.log(allTablesData[i][j]);
+      if (j == 0) {
+        tempData['label'] = allTablesData[i][j];
+      } else {
+        formatData.push(allTablesData[i][j]);
+      }
+    }
+    tempData['data'] = formatData;
+    tempData['borderWidth'] = 1;
+    tablesData.push(tempData);
+
+    tempData = {};
+    formatData= [];
+  }
 
   const ctx = document.getElementById('graph-div').getContext('2d');
 
-  if (window.myChart) {
-    window.myChart.destroy();
+  if (myChart) {
+    myChart.destroy();
   }
 
-  window.myChart = new Chart(ctx, {
-    type: 'bar',
+  console.log(labels);
+  myChart = new Chart(ctx, {
+    type: currentChart,
     data: {
-      labels: labels,
-      datasets: [{
-        label: `Data from ${tableName}`,
-        data: data,
-        borderWidth: 1
-      }]
+      labels: labels, // top of the graph
+      datasets: tablesData,
     },
     options: {
       scales: {
@@ -27,6 +76,24 @@ export function drawGraph(tableData, tableName) {
     }
   });
 }
+
+$('#barChange').click(() => {
+  currentChart = 'bar';
+  drawGraph(savedTableData, savedTableName);
+});
+$('#lineChange').click(() => {
+  currentChart = 'line';
+  drawGraph(savedTableData, savedTableName);
+});
+$('#pieChange').click(() => {
+  currentChart = 'pie';
+  drawGraph(savedTableData, savedTableName);
+});
+$('#radarChange').click(() => {
+  currentChart = 'radar';
+  drawGraph(savedTableData, savedTableName);
+});
+
 
 export function dragElement(elmnt) {
   var pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;

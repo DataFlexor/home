@@ -138,6 +138,36 @@ document.addEventListener('DOMContentLoaded', () => {
       }
     });
   });
+  const pickr = Pickr.create({
+    el: '#color-picker',
+    theme: 'classic', // or 'monolith', or 'nano'
+    useAsButton: true,
+    position: 'bottom-start',
+    components: {
+      hue: true,
+  
+      // Input / output Options
+      interaction: {
+        hex: true,
+        input: true,
+        save: true,
+      },
+    },
+  });
+
+  pickr.on('show', (instance) => {
+    const colorPickerElement = document.querySelector('.pcr-app'); // Get the color picker DOM element
+    const button = document.getElementById('color-picker'); // Get the button element
+  
+    // Get button position relative to the page
+    const buttonRect = button.getBoundingClientRect();
+  
+    // Manually adjust position of the color picker
+    colorPickerElement.style.position = 'absolute';
+    colorPickerElement.style.top = `${buttonRect.bottom}px`; // Align picker below the button
+    colorPickerElement.style.left = `${buttonRect.left + 10}px`;  // Align picker to the left edge of the button
+    colorPickerElement.style.width = '240px';
+  });
 });
 
 function createTable(rows, cols, tableName) {
@@ -159,7 +189,7 @@ function createTable(rows, cols, tableName) {
         input.classList.add('table-name-input');
         input.readOnly = true;
       } else {
-        input.setAttribute('type', (i === 0 || j === 0) ? 'text' : 'number');
+        input.setAttribute('type', (i === 0 || j === 0) ? 'text' : 'text');
       }
 
       cell.appendChild(input);
@@ -269,7 +299,8 @@ async function saveTableData() {
             const cellData = {
               text: input.value,
               row: rowIndex + 1, // Adjust for 1-based indexing
-              column: colIndex + 1 // Adjust for 1-based indexing
+              column: colIndex + 1, // Adjust for 1-based indexing
+              color: '#000000'
             };
             individualTableData.data.push(cellData);
 
@@ -318,7 +349,7 @@ function displayTable(tableData, tableName) {
       if (i === 1 || j === 1) {
         input.setAttribute('type', 'text');
       } else {
-        input.setAttribute('type', 'number');
+        input.setAttribute('type', 'text');
       }
 
       const cellData = tableData.find(cell => cell.row === i && cell.column === j);
@@ -536,6 +567,8 @@ function addTableButton(tableName) {
 
   modalSheet.appendChild(newButton);
 }
+
+
 
 // function updateCurrentEditPosition(row, column) {
 //   const userId = auth.currentUser.uid;  // Get the current user's ID

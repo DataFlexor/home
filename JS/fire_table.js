@@ -1,5 +1,5 @@
 import { app } from './fire_initialize.js';
-import { getFirestore, doc, setDoc, getDoc, updateDoc, deleteField, arrayUnion, Timestamp } from 'https://www.gstatic.com/firebasejs/10.12.3/firebase-firestore.js';
+import { getFirestore, doc, setDoc, getDoc, updateDoc, deleteField, arrayUnion, Timestamp, onSnapshot } from 'https://www.gstatic.com/firebasejs/10.12.3/firebase-firestore.js';
 import { getAuth } from "https://www.gstatic.com/firebasejs/10.12.3/firebase-auth.js";
 import { drawGraph, dragElement} from './graphs.js';
 
@@ -15,6 +15,7 @@ const individualTableName = document.getElementById('individualTableName');
 let numRows = 1;
 let numCols = 1;
 let autoSaveTimeout = null;
+let activeCell = null;
 
 document.addEventListener('DOMContentLoaded', () => {
   auth.onAuthStateChanged(async user => {
@@ -138,37 +139,8 @@ document.addEventListener('DOMContentLoaded', () => {
       }
     });
   });
-  const pickr = Pickr.create({
-    el: '#color-picker',
-    theme: 'classic', // or 'monolith', or 'nano'
-    useAsButton: true,
-    position: 'bottom-start',
-    components: {
-      hue: true,
-  
-      // Input / output Options
-      interaction: {
-        hex: true,
-        input: true,
-        save: true,
-      },
-    },
-  });
-
-  pickr.on('show', (instance) => {
-    const colorPickerElement = document.querySelector('.pcr-app'); // Get the color picker DOM element
-    const button = document.getElementById('color-picker'); // Get the button element
-  
-    // Get button position relative to the page
-    const buttonRect = button.getBoundingClientRect();
-  
-    // Manually adjust position of the color picker
-    colorPickerElement.style.position = 'absolute';
-    colorPickerElement.style.top = `${buttonRect.bottom}px`; // Align picker below the button
-    colorPickerElement.style.left = `${buttonRect.left + 10}px`;  // Align picker to the left edge of the button
-    colorPickerElement.style.width = '240px';
-  });
 });
+
 
 function createTable(rows, cols, tableName) {
   const table = document.createElement('table');
@@ -195,18 +167,16 @@ function createTable(rows, cols, tableName) {
       cell.appendChild(input);
       row.appendChild(cell);
     }
-
     table.appendChild(row);
   }
   // use tableName to put the single table name into the left menu
-  
-
   newTableDiv.appendChild(table);
   newTableDiv.style.display = 'block';
 
   addTableButton(tableName);
   addAutoSaveListeners();
 }
+
 
 function addAutoSaveListeners() {
   const inputs = newTableDiv.querySelectorAll('input');
@@ -296,15 +266,16 @@ async function saveTableData() {
         cells.forEach((cell, colIndex) => {
           const input = cell.querySelector('input');
           if (input) {
+            const hexColor = input.dataset.color || '#000000';
             const cellData = {
               text: input.value,
               row: rowIndex + 1, // Adjust for 1-based indexing
               column: colIndex + 1, // Adjust for 1-based indexing
-              color: '#000000'
+              color: hexToRgb(hexColor)
             };
             individualTableData.data.push(cellData);
 
-            if (rowIndex === 0) { // If it's the first row
+            if (rowIndex === 0) {
               individualTableData.headers[colIndex] = input.value;
             }
           }
@@ -355,9 +326,14 @@ function displayTable(tableData, tableName) {
       const cellData = tableData.find(cell => cell.row === i && cell.column === j);
       if (cellData) {
         input.value = cellData.text;
+        input.style.color = cellData.color;
       } else {
         input.value = '';
       }
+
+      input.addEventListener('focus', () => {
+        activeCell = input;
+      });
 
       cell.appendChild(input);
       row.appendChild(cell);
@@ -385,6 +361,51 @@ function displayTable(tableData, tableName) {
   addTableButton(tableName);
   addAutoSaveListeners();
 }
+
+const pickr = Pickr.create({
+  el: '#color-picker',
+  theme: 'classic', // or 'monolith', or 'nano'
+  useAsButton: true,
+  position: 'bottom-start',
+  components: {
+    hue: true,
+
+    // Input / output Options
+    interaction: {
+      hex: true,
+      input: true,
+      save: true,
+    },
+  },
+});
+
+document.querySelector('#color-picker').addEventListener('click', () => {
+  if (!activeCell) {
+    console.log('No cell selected');
+    return;
+  }
+
+  pickr.on('save', (color) => {
+    const selectedColor = color.toHEXA().toString(); // Get selected color in HEX
+    activeCell.style.color = selectedColor; // Update active cell color
+    activeCell.dataset.color = selectedColor; // Store color for Firebase
+
+    pickr.hide();
+  });
+  pickr.show();
+});
+
+document.querySelector('#italicButton').addEventListener('click', () => {
+  if (!activeCell) {
+    console.log('No cell selected');
+    return;
+  }
+
+  
+  activeCell.style.fontStyle = 'italic';
+ 
+});
+
 
 async function shareTable() {
   const email = $('#single-collab').val(); // get the value from the input
@@ -568,8 +589,17 @@ function addTableButton(tableName) {
   modalSheet.appendChild(newButton);
 }
 
+function hexToRgb(hex) {
+  // Remove the hash at the start if it's there
+  hex = hex.replace(/^#/, '');
+  // Parse the r, g, b values
+  const bigint = parseInt(hex, 16);
+  const r = (bigint >> 16) & 255;
+  const g = (bigint >> 8) & 255;
+  const b = bigint & 255;
 
-
+  return `rgb(${r}, ${g}, ${b})`;
+}
 // function updateCurrentEditPosition(row, column) {
 //   const userId = auth.currentUser.uid;  // Get the current user's ID
 //   const tableRef = doc(db, 'tables', docId);  // Reference to the specific table document

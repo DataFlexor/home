@@ -81,18 +81,22 @@ export function drawGraph(tableData, tableName) {
 // buttons that change the graph type in the menu inside the graph
 $('#barChange').click(() => {
   currentChart = 'bar';
+  $('#graph-popup').css({'width': '600px', 'height': '400'});
   drawGraph(savedTableData, savedTableName);
 });
 $('#lineChange').click(() => {
   currentChart = 'line';
+  $('#graph-popup').css({'width': '600px', 'height': '400'});
   drawGraph(savedTableData, savedTableName);
 });
 $('#pieChange').click(() => {
   currentChart = 'pie';
+  $('#graph-popup').css({'width': '420px', 'height': '500'});
   drawGraph(savedTableData, savedTableName);
 });
 $('#radarChange').click(() => {
   currentChart = 'radar';
+  $('#graph-popup').css({'width': '420px', 'height': '500'});
   drawGraph(savedTableData, savedTableName);
 });
 

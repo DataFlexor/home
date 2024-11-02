@@ -266,12 +266,12 @@ async function saveTableData() {
         cells.forEach((cell, colIndex) => {
           const input = cell.querySelector('input');
           if (input) {
-            const hexColor = input.dataset.color || '#000000';
+            const hexColor = input.style.color || 'rgb(0, 0, 0)';
             const cellData = {
               text: input.value,
               row: rowIndex + 1, // Adjust for 1-based indexing
               column: colIndex + 1, // Adjust for 1-based indexing
-              color: hexToRgb(hexColor)
+              color: hexColor,
             };
             individualTableData.data.push(cellData);
 
@@ -317,18 +317,17 @@ function displayTable(tableData, tableName) {
 
       const cell = document.createElement('td');
       const input = document.createElement('input');
-      if (i === 1 || j === 1) {
-        input.setAttribute('type', 'text');
-      } else {
-        input.setAttribute('type', 'text');
-      }
-
+      input.setAttribute('type', 'text');
+      
       const cellData = tableData.find(cell => cell.row === i && cell.column === j);
       if (cellData) {
         input.value = cellData.text;
-        input.style.color = cellData.color;
+        input.style.color = cellData.color || 'rgb(0, 0, 0)';
+        input.dataset.color = cellData.color || 'rgb(0, 0, 0)';
       } else {
         input.value = '';
+        input.dataset.color = 'rgb(0, 0, 0)';
+        input.dataset.color = 'rgb(0, 0, 0)';
       }
 
       input.addEventListener('focus', () => {
@@ -374,7 +373,6 @@ const pickr = Pickr.create({
     interaction: {
       hex: true,
       input: true,
-      save: true,
     },
   },
 });
@@ -384,15 +382,25 @@ document.querySelector('#color-picker').addEventListener('click', () => {
     console.log('No cell selected');
     return;
   }
-
-  pickr.on('save', (color) => {
-    const selectedColor = color.toHEXA().toString(); // Get selected color in HEX
-    activeCell.style.color = selectedColor; // Update active cell color
-    activeCell.dataset.color = selectedColor; // Store color for Firebase
-
-    pickr.hide();
-  });
   pickr.show();
+});
+
+pickr.on('change', async (color) => {
+  if (!activeCell) {
+    console.log('No cell selected');
+    return;
+  }
+
+  const selectedColor = color.toHEXA().toString(); // Get selected color in HEX
+  activeCell.style.color = selectedColor; // Update active cell color
+  activeCell.dataset.color = selectedColor; // Store color for Firebase
+
+  try {
+    await saveTableData();
+    console.log('Color change saved successfully');
+  } catch (err) {
+    console.log('Error saving color change:', err);
+  }
 });
 
 document.querySelector('#italicButton').addEventListener('click', () => {
@@ -400,10 +408,7 @@ document.querySelector('#italicButton').addEventListener('click', () => {
     console.log('No cell selected');
     return;
   }
-
-  
   activeCell.style.fontStyle = 'italic';
- 
 });
 
 

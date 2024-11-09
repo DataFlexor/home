@@ -1,5 +1,5 @@
 import { app } from './fire_initialize.js';
-import { getFirestore, doc, setDoc, getDoc, updateDoc, deleteField, arrayUnion, Timestamp } from 'https://www.gstatic.com/firebasejs/10.12.3/firebase-firestore.js';
+import { getFirestore, doc, setDoc, getDoc, updateDoc, deleteField, arrayUnion, Timestamp, onSnapshot } from 'https://www.gstatic.com/firebasejs/10.12.3/firebase-firestore.js';
 import { getAuth } from "https://www.gstatic.com/firebasejs/10.12.3/firebase-auth.js";
 import { drawGraph, dragElement} from './graphs.js';
 
@@ -15,6 +15,7 @@ const individualTableName = document.getElementById('individualTableName');
 let numRows = 1;
 let numCols = 1;
 let autoSaveTimeout = null;
+let activeCell = null;
 
 document.addEventListener('DOMContentLoaded', () => {
   auth.onAuthStateChanged(async user => {
@@ -140,6 +141,7 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 });
 
+
 function createTable(rows, cols, tableName) {
   const table = document.createElement('table');
   table.classList.add('table-container');
@@ -159,24 +161,22 @@ function createTable(rows, cols, tableName) {
         input.classList.add('table-name-input');
         input.readOnly = true;
       } else {
-        input.setAttribute('type', (i === 0 || j === 0) ? 'text' : 'number');
+        input.setAttribute('type', (i === 0 || j === 0) ? 'text' : 'text');
       }
 
       cell.appendChild(input);
       row.appendChild(cell);
     }
-
     table.appendChild(row);
   }
   // use tableName to put the single table name into the left menu
-  
-
   newTableDiv.appendChild(table);
   newTableDiv.style.display = 'block';
 
   addTableButton(tableName);
   addAutoSaveListeners();
 }
+
 
 function addAutoSaveListeners() {
   const inputs = newTableDiv.querySelectorAll('input');
@@ -266,14 +266,16 @@ async function saveTableData() {
         cells.forEach((cell, colIndex) => {
           const input = cell.querySelector('input');
           if (input) {
+            const hexColor = input.style.color || 'rgb(0, 0, 0)';
             const cellData = {
               text: input.value,
               row: rowIndex + 1, // Adjust for 1-based indexing
-              column: colIndex + 1 // Adjust for 1-based indexing
+              column: colIndex + 1, // Adjust for 1-based indexing
+              color: hexColor,
             };
             individualTableData.data.push(cellData);
 
-            if (rowIndex === 0) { // If it's the first row
+            if (rowIndex === 0) {
               individualTableData.headers[colIndex] = input.value;
             }
           }
@@ -315,18 +317,22 @@ function displayTable(tableData, tableName) {
 
       const cell = document.createElement('td');
       const input = document.createElement('input');
-      if (i === 1 || j === 1) {
-        input.setAttribute('type', 'text');
-      } else {
-        input.setAttribute('type', 'number');
-      }
-
+      input.setAttribute('type', 'text');
+      
       const cellData = tableData.find(cell => cell.row === i && cell.column === j);
       if (cellData) {
         input.value = cellData.text;
+        input.style.color = cellData.color || 'rgb(0, 0, 0)';
+        input.dataset.color = cellData.color || 'rgb(0, 0, 0)';
       } else {
         input.value = '';
+        input.dataset.color = 'rgb(0, 0, 0)';
+        input.dataset.color = 'rgb(0, 0, 0)';
       }
+
+      input.addEventListener('focus', () => {
+        activeCell = input;
+      });
 
       cell.appendChild(input);
       row.appendChild(cell);
@@ -354,6 +360,57 @@ function displayTable(tableData, tableName) {
   addTableButton(tableName);
   addAutoSaveListeners();
 }
+
+const pickr = Pickr.create({
+  el: '#color-picker',
+  theme: 'classic', // or 'monolith', or 'nano'
+  useAsButton: true,
+  position: 'bottom-start',
+  components: {
+    hue: true,
+
+    // Input / output Options
+    interaction: {
+      hex: true,
+      input: true,
+    },
+  },
+});
+
+document.querySelector('#color-picker').addEventListener('click', () => {
+  if (!activeCell) {
+    console.log('No cell selected');
+    return;
+  }
+  pickr.show();
+});
+
+pickr.on('change', async (color) => {
+  if (!activeCell) {
+    console.log('No cell selected');
+    return;
+  }
+
+  const selectedColor = color.toHEXA().toString(); // Get selected color in HEX
+  activeCell.style.color = selectedColor; // Update active cell color
+  activeCell.dataset.color = selectedColor; // Store color for Firebase
+
+  try {
+    await saveTableData();
+    console.log('Color change saved successfully');
+  } catch (err) {
+    console.log('Error saving color change:', err);
+  }
+});
+
+document.querySelector('#italicButton').addEventListener('click', () => {
+  if (!activeCell) {
+    console.log('No cell selected');
+    return;
+  }
+  activeCell.style.fontStyle = 'italic';
+});
+
 
 async function shareTable() {
   const email = $('#single-collab').val(); // get the value from the input
@@ -537,6 +594,17 @@ function addTableButton(tableName) {
   modalSheet.appendChild(newButton);
 }
 
+function hexToRgb(hex) {
+  // Remove the hash at the start if it's there
+  hex = hex.replace(/^#/, '');
+  // Parse the r, g, b values
+  const bigint = parseInt(hex, 16);
+  const r = (bigint >> 16) & 255;
+  const g = (bigint >> 8) & 255;
+  const b = bigint & 255;
+
+  return `rgb(${r}, ${g}, ${b})`;
+}
 // function updateCurrentEditPosition(row, column) {
 //   const userId = auth.currentUser.uid;  // Get the current user's ID
 //   const tableRef = doc(db, 'tables', docId);  // Reference to the specific table document

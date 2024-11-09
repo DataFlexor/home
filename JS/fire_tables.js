@@ -157,30 +157,3 @@ function formatTimestamp(timestamp) {
     const options = { year: 'numeric', month: 'short', day: 'numeric' };
     return timestamp.toLocaleDateString(undefined, options);
 }
-
-
-const fontSizeBtn = document.getElementById("fontSize");
-const upFont = document.getElementById("upFont");
-const downFont = document.getElementById("downFont");
-
-let fontSize = parseInt(fontSizeBtn.innerText);
-
-upFont.addEventListener('click', () => {
-    fontSize++;
-    fontSizeBtn.innerText = fontSize;
-})
-
-downFont.addEventListener('click', () => {
-    if (fontSize > 1) {     
-    fontSize--;
-    fontSizeBtn.innerText = fontSize;
-    }
-})
-
-document.getElementById('color-hex').addEventListener('input', function() {
-    const colorValue = this.value;
-    const targetElement = document.getElementById('c1r1');
-    
-    targetElement.innerText = colorValue;
-    targetElement.style.backgroundColor = colorValue;
-});

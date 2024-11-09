@@ -54,6 +54,7 @@ export function drawGraph(tableData, tableName) {
     formatData= [];
   }
 
+  // chartjs package structure to get the graph and use it
   const ctx = document.getElementById('graph-div').getContext('2d');
 
   if (myChart) {
@@ -77,24 +78,29 @@ export function drawGraph(tableData, tableName) {
   });
 }
 
+// buttons that change the graph type in the menu inside the graph
 $('#barChange').click(() => {
   currentChart = 'bar';
+  $('#graph-popup').css({'width': '600px', 'height': '400'});
   drawGraph(savedTableData, savedTableName);
 });
 $('#lineChange').click(() => {
   currentChart = 'line';
+  $('#graph-popup').css({'width': '600px', 'height': '400'});
   drawGraph(savedTableData, savedTableName);
 });
 $('#pieChange').click(() => {
   currentChart = 'pie';
+  $('#graph-popup').css({'width': '420px', 'height': '500'});
   drawGraph(savedTableData, savedTableName);
 });
 $('#radarChange').click(() => {
   currentChart = 'radar';
+  $('#graph-popup').css({'width': '420px', 'height': '500'});
   drawGraph(savedTableData, savedTableName);
 });
 
-
+// Code to make the window of the graphs draggable
 export function dragElement(elmnt) {
   var pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
   if (document.getElementById(elmnt.id + "header")) {

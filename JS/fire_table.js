@@ -411,6 +411,16 @@ document.querySelector('#italicButton').addEventListener('click', () => {
   activeCell.style.fontStyle = 'italic';
 });
 
+document.querySelector('#boldButton').addEventListener('click', () => {
+  if (!activeCell) {
+    console.log('No cell selected');
+    return;
+  }
+  activeCell.style.fontWeight = 'bold';
+});
+
+
+
 
 async function shareTable() {
   const email = $('#single-collab').val(); // get the value from the input

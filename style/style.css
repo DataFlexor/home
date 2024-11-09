@@ -357,3 +357,7 @@ background-color: #f2f2f2;
     background-color: rgba(0, 0, 255, 0.2); /* Default color (light blue) */
     border: 2px solid rgba(0, 0, 255, 0.8);  /* Blue border */
 }
+
+.profile-padding {
+    padding-left: 300px;
+}

@@ -1,5 +1,5 @@
 import { app } from './fire_initialize.js';
-import { getFirestore, setDoc, doc, collection, getDocs, Timestamp, deleteDoc } from 'https://www.gstatic.com/firebasejs/10.12.3/firebase-firestore.js';
+import { getFirestore, setDoc, doc, collection, getDocs, Timestamp, deleteDoc, arrayRemove, updateDoc} from 'https://www.gstatic.com/firebasejs/10.12.3/firebase-firestore.js';
 import { getAuth, signOut } from "https://www.gstatic.com/firebasejs/10.12.3/firebase-auth.js";
 
 const db = getFirestore(app);
@@ -85,7 +85,7 @@ auth.onAuthStateChanged(user => {
                             <td>${ownedBy}</td>
                             <td>${formattedDate}</td>
                             <td>Icon/Download Link</td>
-                            <td style="padding-right: 20px"><a class='removeButton'>Remove</a></td>
+                            <td><a class='removeButton'>Remove</a></td>
                         `;
                         // Append the row to the table container
                         tableContainer.appendChild(tableRow);
@@ -97,7 +97,11 @@ auth.onAuthStateChanged(user => {
                                 await deleteDoc(docuRef);
                                 tableRow.remove();
                             } else {
-                                console.log("Table can only be deleted by owner")
+                                const docuRef = doc(db, 'tables', docum.id);
+                                await updateDoc(docuRef, {
+                                    collaborators: arrayRemove(user.uid),
+                                })
+                                tableRow.remove();
                             }
                         });
                         

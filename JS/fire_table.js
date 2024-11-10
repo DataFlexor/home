@@ -84,7 +84,6 @@ document.addEventListener('DOMContentLoaded', () => {
   
     createTable(numRows, numCols, tableName);
     // createWindows(tableName);
-  
     // Add event listeners to each input for auto-save
     addAutoSaveListeners();
   });
@@ -151,6 +150,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
 
 function createTable(rows, cols, tableName) {
+  newTableDiv.innerHTML = "";
   const table = document.createElement('table');
   table.classList.add('table-container');
   table.id = tableName; // Use the provided table name

@@ -100,6 +100,13 @@ auth.onAuthStateChanged(user => {
             });
         }
         }
+        const profileBtn = document.getElementById("profileButton")
+        if (profileBtn) {
+            profileBtn.addEventListener('click', async (event) => {
+                event.preventDefault();
+                window.location = 'profile.html';
+            });
+        }
        
 });
 

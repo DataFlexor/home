@@ -11,6 +11,8 @@ const sendLayoutBtn = document.getElementById('send-layout');
 const newTableDiv = document.getElementById('new-table');
 const titleInput = document.getElementById('main-title');
 const individualTableName = document.getElementById('individualTableName');
+const profileBtn = document.getElementById("profileButton")
+
 
 let numRows = 1;
 let numCols = 1;
@@ -61,6 +63,12 @@ document.addEventListener('DOMContentLoaded', () => {
     } catch (error) {
       console.error('Error fetching table document: ', error);
       displayNoTablesMessage();
+    }
+    if (profileBtn) {
+      profileBtn.addEventListener('click', async (event) => {
+          event.preventDefault();
+          window.location = 'profile.html';
+      });
     }
   });
 

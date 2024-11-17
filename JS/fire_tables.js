@@ -1,5 +1,5 @@
 import { app } from './fire_initialize.js';
-import { getFirestore, setDoc, doc, collection, getDocs, Timestamp } from 'https://www.gstatic.com/firebasejs/10.12.3/firebase-firestore.js';
+import { getFirestore, setDoc, doc, collection, getDocs, Timestamp, deleteDoc, arrayRemove, updateDoc} from 'https://www.gstatic.com/firebasejs/10.12.3/firebase-firestore.js';
 import { getAuth, signOut } from "https://www.gstatic.com/firebasejs/10.12.3/firebase-auth.js";
 
 const db = getFirestore(app);
@@ -55,8 +55,8 @@ auth.onAuthStateChanged(user => {
             tableRow.setAttribute('height', '50px') // put the height of the row in the tag
             tableRow.setAttribute('style', "border-bottom: 2px solid #dddddd;") // puts the style for the table row
             tableRow.innerHTML = `
-                        <th class="fw-bold header-size noto-serif-ethiopic" style="width: 30%; padding-left: 20px;">Name of table</th>
-                        <th class="fw-bold header-size noto-serif-ethiopic" style="width: 30%;">Owned By</th>
+                        <th class="fw-bold header-size noto-serif-ethiopic" style="width: 40%; padding-left: 20px;">Name</th>
+                        <th class="fw-bold header-size noto-serif-ethiopic" style="width: 20%;">Owned By</th>
                         <th class="fw-bold header-size noto-serif-ethiopic" style="width: 20%;">Last Accessed</th>
                         <th class="fw-bold header-size noto-serif-ethiopic" style="width: 20%">Download</th>
                     `;  // putting the table headings into the table row
@@ -67,9 +67,9 @@ auth.onAuthStateChanged(user => {
             const usersRef = collection(db, `users`);
             // Get all documents in the collection
             getDocs(tablesRef).then(querySnapshot => {
-                querySnapshot.forEach(async doc => {
+                querySnapshot.forEach(async docum => {
 
-                    const tableData = doc.data();
+                    const tableData = docum.data();
 
                     if (tableData.owner === user.uid || tableData.collaborators.includes(user.uid)) {
                         const tableRow = document.createElement('tr');
@@ -85,13 +85,28 @@ auth.onAuthStateChanged(user => {
                             <td>${ownedBy}</td>
                             <td>${formattedDate}</td>
                             <td>Icon/Download Link</td>
+                            <td><a class='removeButton'>Remove</a></td>
                         `;
-
                         // Append the row to the table container
                         tableContainer.appendChild(tableRow);
+
+                        tableRow.querySelector('.removeButton').addEventListener('click', async (event) => {
+                            event.stopPropagation();
+                            if (tableData.owner === user.uid) {
+                                const docuRef = doc(db, 'tables', docum.id);
+                                await deleteDoc(docuRef);
+                                tableRow.remove();
+                            } else {
+                                const docuRef = doc(db, 'tables', docum.id);
+                                await updateDoc(docuRef, {
+                                    collaborators: arrayRemove(user.uid),
+                                })
+                                tableRow.remove();
+                            }
+                        });
                         
                         tableRow.addEventListener('click', () => {
-                            window.location.href = `./table.html?userId=${user.uid}&docId=${doc.id}`;
+                            window.location.href = `./table.html?userId=${user.uid}&docId=${docum.id}`;
                         });
                     }
                 });
@@ -99,6 +114,13 @@ auth.onAuthStateChanged(user => {
                 console.error("Error fetching tables: ", error);
             });
         }
+        }
+        const profileBtn = document.getElementById("profileButton")
+        if (profileBtn) {
+            profileBtn.addEventListener('click', async (event) => {
+                event.preventDefault();
+                window.location = 'profile.html';
+            });
         }
        
 });

@@ -11,6 +11,8 @@ const sendLayoutBtn = document.getElementById('send-layout');
 const newTableDiv = document.getElementById('new-table');
 const titleInput = document.getElementById('main-title');
 const individualTableName = document.getElementById('individualTableName');
+const profileBtn = document.getElementById("profileButton")
+
 
 let numRows = 1;
 let numCols = 1;
@@ -62,6 +64,12 @@ document.addEventListener('DOMContentLoaded', () => {
       console.error('Error fetching table document: ', error);
       displayNoTablesMessage();
     }
+    if (profileBtn) {
+      profileBtn.addEventListener('click', async (event) => {
+          event.preventDefault();
+          window.location = 'profile.html';
+      });
+    }
   });
 
   function displayNoTablesMessage() {
@@ -76,7 +84,6 @@ document.addEventListener('DOMContentLoaded', () => {
   
     createTable(numRows, numCols, tableName);
     // createWindows(tableName);
-  
     // Add event listeners to each input for auto-save
     addAutoSaveListeners();
   });
@@ -143,6 +150,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
 
 function createTable(rows, cols, tableName) {
+  newTableDiv.innerHTML = "";
   const table = document.createElement('table');
   table.classList.add('table-container');
   table.id = tableName; // Use the provided table name
@@ -410,6 +418,16 @@ document.querySelector('#italicButton').addEventListener('click', () => {
   }
   activeCell.style.fontStyle = 'italic';
 });
+
+document.querySelector('#boldButton').addEventListener('click', () => {
+  if (!activeCell) {
+    console.log('No cell selected');
+    return;
+  }
+  activeCell.style.fontWeight = 'bold';
+});
+
+
 
 
 async function shareTable() {

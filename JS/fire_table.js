@@ -73,7 +73,7 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   function displayNoTablesMessage() {
-    newTableDiv.innerHTML = '<p>No tables available. Please create a new table.</p>';
+    newTableDiv.innerHTML = '<p>No tables available! Create a new table to continue.</p>';
   }
 
   sendLayoutBtn.addEventListener('click', () => {
@@ -150,7 +150,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
 
 function createTable(rows, cols, tableName) {
-  newTableDiv.innerHTML = "";
+  const tableWrapper = document.createElement("div")
+  tableWrapper.classList.add('single-table-wrapper');
+  tableWrapper.id = `container-${tableName}`;
+
   const table = document.createElement('table');
   table.classList.add('table-container');
   table.id = tableName; // Use the provided table name
@@ -177,8 +180,35 @@ function createTable(rows, cols, tableName) {
     }
     table.appendChild(row);
   }
+
+  const addRowButton = document.createElement('button');
+  addRowButton.textContent = '+ Row';
+  addRowButton.classList.add('add-row-btn');
+  addRowButton.addEventListener('click', () => addRow(tableName));
+
+  const removeRowButton = document.createElement('button');
+  removeRowButton.textContent = '- Row';
+  removeRowButton.classList.add('remove-row-btn');
+  removeRowButton.addEventListener('click', () => removeRow(tableName));
+
+  const addColButton = document.createElement('button');
+  addColButton.textContent = '+ Col';
+  addColButton.classList.add('add-col-btn');
+  addColButton.addEventListener('click', () => addColumn(tableName));
+
+  const removeColButton = document.createElement('button');
+  removeColButton.textContent = '- Col';
+  removeColButton.classList.add('remove-col-btn');
+  removeColButton.addEventListener('click', () => removeColumn(tableName));
+
   // use tableName to put the single table name into the left menu
-  newTableDiv.appendChild(table);
+  tableWrapper.appendChild(addColButton);
+  tableWrapper.appendChild(removeColButton);
+  tableWrapper.appendChild(addRowButton);
+  tableWrapper.appendChild(removeRowButton);
+  tableWrapper.appendChild(table);
+  
+  newTableDiv.appendChild(tableWrapper);
   newTableDiv.style.display = 'block';
 
   addTableButton(tableName);
@@ -276,13 +306,12 @@ async function saveTableData() {
           if (input) {
             const hexColor = input.style.color || 'rgb(0, 0, 0)';
             const cellData = {
-              text: input.value,
+              text: input.value || '',
               row: rowIndex + 1, // Adjust for 1-based indexing
               column: colIndex + 1, // Adjust for 1-based indexing
               color: hexColor,
             };
             individualTableData.data.push(cellData);
-
             if (rowIndex === 0) {
               individualTableData.headers[colIndex] = input.value;
             }
@@ -305,10 +334,14 @@ async function saveTableData() {
 titleInput.addEventListener('input', handleInputChange);
 
 function displayTable(tableData, tableName) {
+  const tableWrapper = document.createElement("div")
+  tableWrapper.classList.add('single-table-wrapper');
+  tableWrapper.id = `container-${tableName}`;
+
   const tableElement = document.createElement('table');
   tableElement.classList.add('table-container');
   tableElement.id = tableName; // Set the ID to the table name
-  tableElement.style.display = 'none';
+  tableElement.style.display = 'block';
 
   let maxRow = 0;
   let maxCol = 0;
@@ -362,8 +395,35 @@ function displayTable(tableData, tableName) {
     input.classList.add('table-name-input');
     firstCell.appendChild(input);
   }
+  const addRowButton = document.createElement('button');
+  addRowButton.textContent = '+ Row';
+  addRowButton.classList.add('add-row-btn');
+  addRowButton.addEventListener('click', () => addRow(tableName));
 
-  newTableDiv.appendChild(tableElement);
+  const removeRowButton = document.createElement('button');
+  removeRowButton.textContent = '- Row';
+  removeRowButton.classList.add('remove-row-btn');
+  removeRowButton.addEventListener('click', () => removeRow(tableName));
+
+  const addColButton = document.createElement('button');
+  addColButton.textContent = '+ Col';
+  addColButton.classList.add('add-col-btn');
+  addColButton.addEventListener('click', () => addColumn(tableName));
+
+  const removeColButton = document.createElement('button');
+  removeColButton.textContent = '- Col';
+  removeColButton.classList.add('remove-col-btn');
+  removeColButton.addEventListener('click', () => removeColumn(tableName));
+
+  // use tableName to put the single table name into the left menu
+  tableWrapper.appendChild(addColButton);
+  tableWrapper.appendChild(removeColButton);
+  tableWrapper.appendChild(addRowButton);
+  tableWrapper.appendChild(removeRowButton);
+  tableWrapper.appendChild(tableElement);
+  
+  newTableDiv.appendChild(tableWrapper);
+  // newTableDiv.appendChild(tableElement);
 
   addTableButton(tableName);
   addAutoSaveListeners();
@@ -428,8 +488,6 @@ document.querySelector('#boldButton').addEventListener('click', () => {
 });
 
 
-
-
 async function shareTable() {
   const email = $('#single-collab').val(); // get the value from the input
   if (!email) {  // check if the value is empty
@@ -481,7 +539,7 @@ function addTableButton(tableName) {
   newButton.textContent = tableName;
 
   newButton.addEventListener('click', () => {
-    const table = document.getElementById(tableName);
+    const table = document.getElementById(`container-${tableName}`);
     if (table) {
       table.style.display = table.style.display === 'none' ? 'block' : 'none';
     }
@@ -560,8 +618,10 @@ function addTableButton(tableName) {
             newButton.remove();
 
             const table = document.getElementById(tableName);
+            const tableWrapper = document.getElementById(`container-${tableName}`);
             if (table) {
               table.remove();
+              tableWrapper.remove();
             }
 
             console.log(`Table "${tableName}" deleted successfully.`);
@@ -612,17 +672,73 @@ function addTableButton(tableName) {
   modalSheet.appendChild(newButton);
 }
 
-function hexToRgb(hex) {
-  // Remove the hash at the start if it's there
-  hex = hex.replace(/^#/, '');
-  // Parse the r, g, b values
-  const bigint = parseInt(hex, 16);
-  const r = (bigint >> 16) & 255;
-  const g = (bigint >> 8) & 255;
-  const b = bigint & 255;
+function addRow(tableName) {
+  const table = document.getElementById(tableName);
+  if (!table) {
+    console.error('Table not found:', tableName);
+    return;
+  }
+  
+  const colCount = table.rows.length > 0 ? table.rows[0].cells.length : 1;
+  const newRow = document.createElement('tr');
 
-  return `rgb(${r}, ${g}, ${b})`;
+  for (let i = 0; i < colCount ; i++){
+    const newCell = document.createElement('td')
+    const input = document.createElement('input')
+    input.type = 'text';
+    newCell.appendChild(input);
+    newRow.appendChild(newCell);
+  }
+  table.appendChild(newRow)
+
+  saveTableData();
 }
+
+function removeRow(tableName) {
+  const table = document.getElementById(tableName);
+
+  if (!table) {
+    console.error('Table not found:', tableName);
+  }
+
+  if (table.rows.length <= 1) {
+    console.warn('Cannot remove the last row');
+    return;
+  }
+
+  table.deleteRow(table.rows.length - 1);
+  console.log('Table row removed.')
+
+  saveTableData();
+}
+
+function addColumn(tableName) {
+  const table = document.getElementById(tableName);
+  if (!table) return;
+
+  for (const row of table.rows) {
+    const newCell = document.createElement('td');
+    const input = document.createElement('input');
+    input.type = 'text';
+    newCell.appendChild(input);
+    row.appendChild(newCell);
+  }
+
+  saveTableData();
+}
+
+function removeColumn(tableName) {
+  const table = document.getElementById(tableName);
+  if (!table || table.rows[0].cells.length <= 1) return;
+
+  for (const row of table.rows) {
+    row.deleteCell(row.cells.length - 1);
+  }
+
+  saveTableData();
+}
+
+
 // function updateCurrentEditPosition(row, column) {
 //   const userId = auth.currentUser.uid;  // Get the current user's ID
 //   const tableRef = doc(db, 'tables', docId);  // Reference to the specific table document

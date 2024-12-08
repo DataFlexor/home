@@ -76,16 +76,40 @@ document.addEventListener('DOMContentLoaded', () => {
     newTableDiv.innerHTML = '<p>No tables available! Create a new table to continue.</p>';
   }
 
-  sendLayoutBtn.addEventListener('click', () => {
+  sendLayoutBtn.addEventListener('click', async () => {
     chooseRowCol.style.display = 'none';
     numRows = parseInt(document.getElementById('rows').value) || 1;
     numCols = parseInt(document.getElementById('columns').value) || 1;
     const tableName = individualTableName.value || `table-${Date.now()}`;
-  
-    createTable(numRows, numCols, tableName);
+
+    const urlParams = new URLSearchParams(window.location.search);
+    const docId = urlParams.get('docId');
+
+    const tableRef = doc(db, `tables`, docId);
+
+    const docSnapshot = await getDoc(tableRef);
+    if (docSnapshot.exists()) {
+        const tablesMap = docSnapshot.data().tables;
+
+        // Check if the tableName already exists in the tables map
+        if (tablesMap && tablesMap.hasOwnProperty(tableName)) {
+            // If the table name exists, show an alert or handle the logic accordingly
+            alert('This table name already exists. Please choose a different name.');
+            document.getElementById('rows').value = '';
+            document.getElementById('columns').value = '';
+            individualTableName.value = "";
+            return; // Exit the function to prevent table creation
+        } else {
+          createTable(numRows, numCols, tableName);
+          addAutoSaveListeners();
+        }
+      }
+    
     // createWindows(tableName);
     // Add event listeners to each input for auto-save
-    addAutoSaveListeners();
+    document.getElementById('rows').value = '';
+    document.getElementById('columns').value = '';
+    individualTableName.value = "";
   });
 
   $('#sendCollab').click(function () {
@@ -132,7 +156,6 @@ document.addEventListener('DOMContentLoaded', () => {
       $('#draggable-graph-menu').toggle();
     });
 
-  
     // Hide the open menu when clicking outside of it
     $(document).click(function(e) {
       if (!$(e.target).closest('#share-menu, #shareBtn').length) {
@@ -170,7 +193,7 @@ function createTable(rows, cols, tableName) {
         input.setAttribute('type', 'text');
         input.value = tableName;
         input.classList.add('table-name-input');
-        input.readOnly = true;
+        input.disabled = true;
       } else {
         input.setAttribute('type', (i === 0 || j === 0) ? 'text' : 'text');
       }
@@ -213,6 +236,7 @@ function createTable(rows, cols, tableName) {
 
   addTableButton(tableName);
   addAutoSaveListeners();
+  saveTableData();
 }
 
 

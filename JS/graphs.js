@@ -57,21 +57,21 @@ export function drawGraph(tableData, tableName) {
   // chartjs package structure to get the graph and use it
   const ctx = document.getElementById('graph-div').getContext('2d');
 
-  if (myChart) {
-    myChart.destroy();
+  if (myChart) { // checks if a previous myChart instance exists
+    myChart.destroy(); // destroys it if it does to clear way for the new chart
   }
 
   console.log(labels);
   myChart = new Chart(ctx, {
-    type: currentChart,
+    type: currentChart,// graph type
     data: {
-      labels: labels, // top of the graph
-      datasets: tablesData,
+      labels: labels, // top labels for the graph
+      datasets: tablesData, // data to be visualized
     },
     options: {
       scales: {
         y: {
-          beginAtZero: true
+          beginAtZero: true // start the y-axis at zero
         }
       }
     }

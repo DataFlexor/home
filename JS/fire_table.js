@@ -605,7 +605,13 @@ function addTableButton(tableName) {
           const tableDocSnap = await getDoc(tableDocRef);
 
           if (tableDocSnap.exists()) {
-            const tableData = tableDocSnap.data().tables[tableName];
+            const tables = tableDocSnap.data().tables;
+
+            if(tables[newName]) {
+              alert("A table with this name already exists. Please choose a different name.");
+              return;
+            }
+            const tableData = tables[tableName];
 
             await updateDoc(tableDocRef, {
               [`tables.${tableName}`]: deleteField(),

@@ -1,9 +1,10 @@
-import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, sendPasswordResetEmail} from "https://www.gstatic.com/firebasejs/10.12.3/firebase-auth.js";
+import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, sendPasswordResetEmail, signOut} from "https://www.gstatic.com/firebasejs/10.12.3/firebase-auth.js";
 import { getFirestore, setDoc, doc} from 'https://www.gstatic.com/firebasejs/10.12.3/firebase-firestore.js';
 import { app } from "./fire_initialize.js";
 
-
-const signUp = document.getElementById("registerButton")
+const logIn = document.getElementById("loginButton")
+const signOutButton = document.getElementById("soButton");
+const signUp = document.getElementById("registerButton");
 const pass_verify = document.querySelector('#password_verify');
 
 
@@ -48,7 +49,6 @@ if (signUp) {
   });
 }
 
-const logIn = document.getElementById("loginButton")
 if (logIn) {
   logIn.addEventListener('click', (event) => {
     event.preventDefault();
@@ -71,6 +71,18 @@ if (logIn) {
       // ..
     });
   })
+}
+
+if (signOutButton) {
+  signOutButton.addEventListener('click', async (event) => {
+          event.preventDefault();
+          const auth = getAuth(app);
+          signOut(auth).then(() => {
+              window.location = 'index.html';
+          }).catch((error) => {
+              console.log("Error signing out:", error);
+          });
+      });
 }
 
 const passRecovery = document.getElementById('passRecovery');

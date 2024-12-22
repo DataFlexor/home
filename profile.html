@@ -28,7 +28,7 @@
     <div class="container">
       <main>
         <div class="py-5 text-center">
-          <img class="d-block mx-auto mb-4" src="./assets/user-avatar.png" alt="User Avatar" width="100" height="100">
+          <img src="https://drive.google.com/drive-viewer/AKGpihajFl3knorE5E3ZxaJbnhu3V39CY7LCfkQgjueUL724ViooX4POQ9Xvjczwnc43AliV4eEBI5NZSmGYxnjsVAz-2Zy2JzyUIqw=s2560" alt="User Avatar" width="100" height="100">
           <h2>User Profile</h2>
           <p class="lead">Welcome back!</p>
           <button type="button" id="soButton" class="btn btn-danger my-3">Sign Out</button>
@@ -63,10 +63,23 @@
               </li>
             </ul>
           </div>
+
+          <div>
+            <div class="table_rw_popup" style="width: 300px;">
+              <label for="newEmail" class="form-label">New Email</label>
+              <input class="form-control" id="newEmailInput" required>
+              <label for="currentPassword" class="form-label">Current Password</label>
+              <input class="form-control" id="currentPassInput" required>
+              <button id="send-layout" class="menu-button" style="margin-top: 10px">Update</button>
+            </div>
+          </div>
+          
+
           <div class="col-md-7 col-lg-8">
             <h4 class="mb-3">Account Details</h4>
             <form class="needs-validation" novalidate>
               <div class="row g-3">
+                <!-- First Name -->
                 <div class="col-sm-6">
                   <label for="firstName" class="form-label">First name</label>
                   <input type="text" class="form-control" id="firstName" placeholder="" value="" required>
@@ -74,7 +87,8 @@
                     Valid first name is required.
                   </div>
                 </div>
-
+          
+                <!-- Last Name -->
                 <div class="col-sm-6">
                   <label for="lastName" class="form-label">Last name</label>
                   <input type="text" class="form-control" id="lastName" placeholder="" value="" required>
@@ -82,29 +96,38 @@
                     Valid last name is required.
                   </div>
                 </div>
-
-                <div class="col-12">
-                  <label for="username" class="form-label">Username</label>
-                  <div class="input-group has-validation">
-                    <span class="input-group-text">@</span>
-                    <input type="text" class="form-control" id="username" placeholder="Username" required>
-                    <div class="invalid-feedback">
-                      Your username is required.
-                    </div>
-                  </div>
-                </div>
-
-                <div class="col-12">
-                  <label for="email" class="form-label">Email <span class="text-body-secondary">(Optional)</span></label>
-                  <input type="email" class="form-control" id="email" placeholder="you@example.com">
+              </div>
+          
+              <div class="row g-3 align-items-end">
+                <!-- Email -->
+                <div class="col-sm-9">
+                  <label for="email" class="form-label">Email</label>
+                  <input type="email" class="form-control" id="profileEmail" placeholder="New Email">
                   <div class="invalid-feedback">
                     Please enter a valid email address.
                   </div>
                 </div>
+                <div class="col-sm-3">
+                  <button id="changeEmailBtn" type="button" class="btn btn-secondary w-100">Change Email</button>
+                </div>
               </div>
-
+          
+              <div class="row g-3 align-items-end mt-3">
+                <!-- Password -->
+                <div class="col-sm-9">
+                  <label for="password" class="form-label">Password</label>
+                  <input type="password" class="form-control" id="profilePassword" placeholder="New Password">
+                  <div class="invalid-feedback">
+                    Please enter a valid password.
+                  </div>
+                </div>
+                <div class="col-sm-3">
+                  <button id="changePassBtn" type="button" class="btn btn-secondary w-100">Change Password</button>
+                </div>
+              </div>
+          
               <hr class="my-4">
-
+          
               <button class="w-100 btn btn-primary btn-lg" type="submit">Save Changes</button>
             </form>
           </div>

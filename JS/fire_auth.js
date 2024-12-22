@@ -1,4 +1,4 @@
-import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, sendPasswordResetEmail, signOut} from "https://www.gstatic.com/firebasejs/10.12.3/firebase-auth.js";
+import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged, sendPasswordResetEmail, signOut} from "https://www.gstatic.com/firebasejs/10.12.3/firebase-auth.js";
 import { getFirestore, setDoc, doc} from 'https://www.gstatic.com/firebasejs/10.12.3/firebase-firestore.js';
 import { app } from "./fire_initialize.js";
 
@@ -110,3 +110,27 @@ if (passRecovery) {
     }
   });
 }
+
+function displayEmail() {
+  const auth = getAuth();
+
+  onAuthStateChanged(auth, (user) => {
+    if (user) {
+      const emailInput = document.getElementById("profileEmail");
+      emailInput.value = user.email; // Set the value of the input field
+      emailInput.readOnly = true;
+    } else {
+      // No user is signed in
+      console.error("No user is signed in.");
+    }
+  });
+}
+
+
+window.onload = displayEmail();
+
+const changeEmailBtn = document.getElementById("changeEmailBtn");
+
+changeEmailBtn.addEventListener('click', () => {
+  console.log("Change button clicked");
+});
